@@ -7,7 +7,7 @@ public class ClassDefNode extends ASTNode{
     public String name;
     public ArrayList<SingleVarDefStmt> varList=new ArrayList<>();
     public ArrayList<FuncDefNode> funcList=new ArrayList<>();
-    public ArrayList<FuncDefNode> constructorList=new ArrayList<>();
+    public FuncDefNode constructor=null;
     public ClassDefNode(position pos,String name){
         super(pos);
         this.name=name;

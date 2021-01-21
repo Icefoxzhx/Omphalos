@@ -79,10 +79,9 @@ public class SemanticChecker implements ASTVisitor{
         currentClass.varMap.forEach((key,val)->currentScope.defineVariable(key,val,it.pos));
         currentClass.funcMap.forEach((key,val)->currentScope.defineFunction(key,val,it.pos));
         it.funcList.forEach(x->x.accept(this));
-        if(it.constructorList!=null){
-            if(it.constructorList.size()!=1) throw new semanticError("more than one constructor",it.pos);
-            if(!it.constructorList.get(0).name.equals(it.name)) throw new semanticError("mismatched constructor name",it.pos);
-            it.constructorList.get(0).accept(this);
+        if(it.constructor!=null){
+            if(!it.constructor.name.equals(it.name)) throw new semanticError("mismatched constructor name",it.pos);
+            it.constructor.accept(this);
         }
         currentScope=currentScope.parentScope;
         currentClass=null;
@@ -327,7 +326,6 @@ public class SemanticChecker implements ASTVisitor{
         if(!it.expr.type.isInt())  throw new semanticError("not int", it.pos);
         if(!it.expr.assignable) throw new semanticError("not assignable", it.pos);
         it.type = it.expr.type;
-        it.assignable=true;
     }
 
     @Override

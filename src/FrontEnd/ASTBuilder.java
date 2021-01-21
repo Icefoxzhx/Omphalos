@@ -47,10 +47,9 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode>{
                 res.funcList.add((FuncDefNode) visit(x));
             }
         }
-        if(ctx.constructFuncDef()!=null){
-            for(ParserRuleContext x : ctx.constructFuncDef()){
-                res.constructorList.add((FuncDefNode) visit(x));
-            }
+        if(ctx.constructFuncDef().size()!=0){
+            if(ctx.constructFuncDef().size()!=1) throw new semanticError("More than one constructor",new position(ctx));
+            res.constructor=(FuncDefNode) visit(ctx.constructFuncDef(0));
         }
         return res;
     }

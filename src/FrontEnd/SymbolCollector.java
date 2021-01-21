@@ -93,7 +93,7 @@ public class SymbolCollector implements ASTVisitor{
         ClassType tmp=new ClassType(it.name);
         it.varList.forEach(x->x.accept(this));
         it.funcList.forEach(x->x.accept(this));
-        it.constructorList.forEach(x->x.accept(this));
+        if(it.constructor!=null) tmp.constructor=new FuncSymbol(it.constructor.name);
         tmp.varMap= current.varMap;
         tmp.funcMap= current.funcMap;
         current=current.parentScope;
