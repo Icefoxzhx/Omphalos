@@ -99,7 +99,9 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode>{
     }
 
     @Override
-    public ASTNode visitBasicType(MxParser.BasicTypeContext ctx) { return visitChildren(ctx); }
+    public ASTNode visitBasicType(MxParser.BasicTypeContext ctx) {
+        return new TypeNode(new position(ctx), ctx.getText(), 0);
+    }
 
     @Override
     public ASTNode visitType(MxParser.TypeContext ctx) {
