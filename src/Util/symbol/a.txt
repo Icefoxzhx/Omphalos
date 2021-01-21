@@ -1,0 +1,243 @@
+==git stdout==
+
+==git stderr==
+Cloning into '.'...
+
+==stdout==
+
+==stderr==
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxBaseVisitor.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxVisitor.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxListener.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxLexer.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxParser.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xBF) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                          ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xCC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                            ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xBC) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                              ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                               ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xCB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xE3BB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                 ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xFA) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                  ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xB1) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                      ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xE0) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                       ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xD2) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                        ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xEB) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                         ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xC6) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                          ^
+./src/Parser/MxBaseListener.java:1: error: unmappable character (0xF7) for encoding UTF-8
+// Generated from D:/mine/�γ�/�����ϵͳ/������/mine/CP/CP/src/Parser\Mx.g4 by ANTLR 4.9
+                                           ^
+78 errors

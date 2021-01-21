@@ -14,11 +14,8 @@ singleVarDef : Identifier ('=' expression)?;
 paramList : param (',' param)*;
 param : type Identifier;
 
-basicType : Bool | Int | String;
-type
-    : (Identifier | basicType) ('[' ']')*
-    | Void
-    ;
+basicType : Identifier | Bool | Int | String;
+type : basicType ('[' ']')*;
 returnType : type | Void;
 
 suite : '{' statement* '}';
@@ -26,7 +23,7 @@ suite : '{' statement* '}';
 statement
     : suite                                                 #Block
     | varDef                                                #VarDefStmt
-    | If '(' expression ')' trueStmt=statement 
+    | If '(' expression ')' trueStmt=statement
         (Else falseStmt=statement)?                         #IfStmt
     | For '(' init=expression? ';' cond=expression? ';'
                 incr=expression? ')' statement              #ForStmt
@@ -41,7 +38,7 @@ statement
 expressionList : expression (',' expression)*;
 
 expression
-    : expression op=('++' | '--')                  #SuffixExpr   // Precedence 1
+    : expression op=('++' | '--')                  #SuffixExpr       // Precedence 1
     | expression '(' expressionList? ')'           #FuncCall
     | expression '[' expression ']'                #Subscript
     | expression '.' Identifier                    #MemberAccess
@@ -78,10 +75,10 @@ constant
     | Null
     ;
 creator
-    : (basicType | Identifier) ('[' expression ']')+ ('[' ']')+ ('[' expression ']')+ #ErrorCreator
-    | (basicType | Identifier) ('[' expression ']')+ ('[' ']')* #ArrayCreator
-    | (basicType | Identifier) '(' ')'                          #ClassCreator
-    | (basicType | Identifier)                                  #BasicCreator
+    : basicType ('[' expression ']')+ ('[' ']')+ ('[' expression ']')+ #ErrorCreator
+    | basicType ('[' expression ']')+ ('[' ']')* #ArrayCreator
+    | basicType '(' ')'                          #ClassCreator
+    | basicType                                  #BasicCreator
     ;
 
 

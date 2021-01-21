@@ -1,4 +1,5 @@
-// Generated from D:/Useless/Study/Code/Compiler/src\Mx.g4 by ANTLR 4.9
+// Generated from D:/Useless/Code/Compiler/Omphalos-local/src/Parser\Mx.g4 by ANTLR 4.9
+package Parser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
