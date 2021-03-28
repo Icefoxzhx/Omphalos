@@ -189,7 +189,7 @@ public class IRBuilder implements ASTVisitor {
         Operand sz=it.exprList.get(i).Vregid;
         currentBlock.insts.add(new Calc("addi",new PReg("a0"),sz,new Imm(1)));
         currentBlock.insts.add(new Call("__Om_builtin_malloc"));
-        currentBlock.insts.add(new Store(new PReg("a0"),nowreg));
+        currentBlock.insts.add(new Mv(nowreg,new PReg("a0")));
         nowreg.isptr=true;
         currentBlock.insts.add(new Store(sz,nowreg));
         if(i<it.exprList.size()-1){

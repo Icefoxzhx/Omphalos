@@ -24,13 +24,19 @@ public class Mv extends Inst{
             prt.println("\tlw t3, " + rs.toString());
             rs.color=new PReg("t3");
         }
+        if(rs.isptr){
+            prt.println("\tlw "+rs.toString()+", 0("+rs.toString()+")");
+        }
         if((rd instanceof VReg || rd instanceof Symbol) && rd.color==null ){
             rd.color=new PReg("t5");
         }
 
         prt.println("\tmv "+rd.toString()+","+rs.toString());
 
-        if(rd instanceof VReg){
+        if(rd.isptr){
+            prt.println("\tlw t6," + -(((VReg) rd).id + 1) * 4 + "(s0)");
+            prt.println("\tsw " + rd.toString()+",  0(t6)");
+        }else if(rd instanceof VReg){
             prt.println("\tsw " + rd.toString()+", " + -(((VReg) rd).id + 1) * 4 + "(s0)");
         }
         if(rd instanceof Symbol){

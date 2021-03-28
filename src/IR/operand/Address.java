@@ -5,6 +5,7 @@ public class Address extends Operand{
 	public Address(Operand base, Operand offset){
 		this.offset=offset;
 		this.base=base;
+		this.isptr=false;
 	}
 	@Override
 	public String toString() {
