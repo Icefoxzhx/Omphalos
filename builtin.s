@@ -1,8 +1,3 @@
-	.file	"builtin.c"
-	.option nopic
-	.attribute arch, "rv32i2p0_a2p0"
-	.attribute unaligned_access, 0
-	.attribute stack_align, 16
 	.text
 	.align	2
 	.globl	__Om_builtin_malloc
@@ -443,4 +438,3 @@ __Om_builtin_str_ne:
 	addi	sp,sp,32
 	jr	ra
 	.size	__Om_builtin_str_ne, .-__Om_builtin_str_ne
-	.ident	"GCC: (GNU) 10.2.0"
