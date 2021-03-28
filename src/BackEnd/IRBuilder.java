@@ -208,7 +208,7 @@ public class IRBuilder implements ASTVisitor {
 
             currentBlock.insts.add(new Store(newArray(i+1,it),res));
 
-            currentBlock.insts.add(new Calc("sub",iter,iter,new Imm(1)));
+            currentBlock.insts.add(new Calc("addi",iter,iter,new Imm(-1)));
             currentBlock.insts.add(new J(loopcond));
 
             currentBlock.insts.add(new Label(loopend));
@@ -452,7 +452,7 @@ public class IRBuilder implements ASTVisitor {
                 currentBlock.insts.add(new Calc("addi", it.expr.Vregid, it.expr.Vregid, new Imm(1)));
                 break;
             case "--":
-                currentBlock.insts.add(new Calc("subi", it.expr.Vregid, it.expr.Vregid, new Imm(1)));
+                currentBlock.insts.add(new Calc("addi", it.expr.Vregid, it.expr.Vregid, new Imm(-1)));
                 break;
         }
     }
@@ -472,7 +472,7 @@ public class IRBuilder implements ASTVisitor {
                 break;
             case "--":
                 it.Vregid=it.expr.Vregid;
-                currentBlock.insts.add(new Calc("subi",it.Vregid,it.expr.Vregid,new Imm(1)));
+                currentBlock.insts.add(new Calc("addi",it.Vregid,it.expr.Vregid,new Imm(-1)));
                 break;
             case "+":
                 it.Vregid=it.expr.Vregid;
