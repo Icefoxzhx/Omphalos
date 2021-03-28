@@ -14,4 +14,7 @@ public class ClassType extends Type{
     public boolean equals(Type t){
         return t.isNull()||((t instanceof ClassType)&&(this.name.equals(((ClassType)t).name)));
     }
+    public int size(){
+        return varMap.size()*4;
+    }
 }

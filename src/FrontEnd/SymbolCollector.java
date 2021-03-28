@@ -18,40 +18,47 @@ public class SymbolCollector implements ASTVisitor{
         {
             FuncSymbol func=new FuncSymbol("print");
             func.returnType=new PrimitiveType("void");
+            func.abs_name="__Om_builtin_print";
             func.paramList.add(new VarSymbol("str",new PrimitiveType("string")));
             this.global.funcMap.put("print",func);
         }
         {
             FuncSymbol func=new FuncSymbol("println");
             func.returnType=new PrimitiveType("void");
+            func.abs_name="__Om_builtin_println";
             func.paramList.add(new VarSymbol("str",new PrimitiveType("string")));
             this.global.funcMap.put("println",func);
         }
         {
             FuncSymbol func=new FuncSymbol("printInt");
             func.returnType=new PrimitiveType("void");
+            func.abs_name="__Om_builtin_printInt";
             func.paramList.add(new VarSymbol("n",new PrimitiveType("int")));
             this.global.funcMap.put("printInt",func);
         }
         {
             FuncSymbol func=new FuncSymbol("printlnInt");
             func.returnType=new PrimitiveType("void");
+            func.abs_name="__Om_builtin_printlnInt";
             func.paramList.add(new VarSymbol("n",new PrimitiveType("int")));
             this.global.funcMap.put("printlnInt",func);
         }
         {
             FuncSymbol func=new FuncSymbol("getString");
             func.returnType=new PrimitiveType("string");
+            func.abs_name="__Om_builtin_getString";
             this.global.funcMap.put("getString",func);
         }
         {
             FuncSymbol func=new FuncSymbol("getInt");
             func.returnType=new PrimitiveType("int");
+            func.abs_name="__Om_builtin_getInt";
             this.global.funcMap.put("getInt",func);
         }
         {
             FuncSymbol func=new FuncSymbol("toString");
             func.returnType=new PrimitiveType("string");
+            func.abs_name="__Om_builtin_toString";
             func.paramList.add(new VarSymbol("i",new PrimitiveType("int")));
             this.global.funcMap.put("toString",func);
         }
@@ -64,7 +71,8 @@ public class SymbolCollector implements ASTVisitor{
 
     @Override
     public void visit(SingleVarDefStmt it) {
-        current.defineVariable(it.name,new VarSymbol(it.name),it.pos);
+        it.var=new VarSymbol(it.name);
+        current.defineVariable(it.name,it.var,it.pos);
     }
 
     @Override
@@ -84,7 +92,8 @@ public class SymbolCollector implements ASTVisitor{
 
     @Override
     public void visit(FuncDefNode it) {
-        current.defineFunction(it.name,new FuncSymbol(it.name),it.pos);
+        it.func=new FuncSymbol(it.name);
+        current.defineFunction(it.name,it.func,it.pos);
     }
 
     @Override

@@ -1,8 +1,7 @@
 import AST.ProgramNode;
-import FrontEnd.ASTBuilder;
-import FrontEnd.SemanticChecker;
-import FrontEnd.SymbolCollector;
-import FrontEnd.TypeCollector;
+import FrontEnd.*;
+import BackEnd.*;
+import IR.IRBlockList;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -17,12 +16,23 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 public class Main{
-	public static void main(String[] args)throws Exception{
-		InputStream input=System.in;
-		try{
-			ProgramNode ASTRoot;
-			MxLexer lexer=new MxLexer(CharStreams.fromStream(input));
-			lexer.removeErrorListeners();
+    public static void main(String[] args)throws Exception{
+        boolean codegen=true,optimize=false;
+        if(args.length>0){
+            for(String arg:args){
+                switch(arg){
+                    case "-semantic" -> codegen=false;
+                    case "-codegen" -> codegen=true;
+                    case "-O2" -> optimize=true;
+                }
+            }
+        }
+        //String name="./sema/basic-package/basic-41.mx";
+        InputStream input=System.in;//new FileInputStream(name);
+        try{
+            ProgramNode ASTRoot;
+            MxLexer lexer=new MxLexer(CharStreams.fromStream(input));
+            lexer.removeErrorListeners();
             lexer.addErrorListener(new MxErrorListener());
             MxParser parser=new MxParser(new CommonTokenStream(lexer));
             parser.removeErrorListeners();
@@ -30,13 +40,17 @@ public class Main{
             ParseTree parseTreeRoot=parser.program();
             ASTBuilder astBuilder=new ASTBuilder();
             ASTRoot=(ProgramNode) astBuilder.visit(parseTreeRoot);
-			Scope global=new Scope(null);
-			new SymbolCollector(global).visit(ASTRoot);
-			new TypeCollector(global).visit(ASTRoot);
-			global.varMap.clear();
-			new SemanticChecker(global).visit(ASTRoot);
+            Scope global=new Scope(null);
+            new SymbolCollector(global).visit(ASTRoot);
+            new TypeCollector(global).visit(ASTRoot);
+            global.varMap.clear();
+            new SemanticChecker(global).visit(ASTRoot);
+            if(!codegen) return;
+            IRBlockList Root=new IRBlockList();
+            new IRBuilder(Root).visit(ASTRoot);
+            Root.printASM(System.out);
         } catch(Error er){
-        	System.err.println(er.toString());
+            System.err.println(er.toString());
             throw new RuntimeException();
         }
     }
