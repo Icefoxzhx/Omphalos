@@ -5,7 +5,6 @@ public class PReg extends Register{
 
     public PReg(String name){
         this.name=name;
-        this.isptr=false;
     }
 
     @Override

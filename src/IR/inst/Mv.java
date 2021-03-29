@@ -1,9 +1,6 @@
 package IR.inst;
 
-import IR.operand.Operand;
-import IR.operand.PReg;
-import IR.operand.Symbol;
-import IR.operand.VReg;
+import IR.operand.*;
 
 import java.io.PrintStream;
 
@@ -24,7 +21,7 @@ public class Mv extends Inst{
             prt.println("\tlw t3, " + rs.toString());
             rs.color=new PReg("t3");
         }
-        if(rs.isptr){
+        if(rs instanceof Address){
             prt.println("\tlw "+rs.toString()+", 0("+rs.toString()+")");
         }
         if((rd instanceof VReg || rd instanceof Symbol) && rd.color==null ){
@@ -33,13 +30,12 @@ public class Mv extends Inst{
 
         prt.println("\tmv "+rd.toString()+","+rs.toString());
 
-        if(rd.isptr){
+        if(rd instanceof Address){
             prt.println("\tlw t6," + -(((VReg) rd).id + 1) * 4 + "(s0)");
             prt.println("\tsw " + rd.toString()+",  0(t6)");
         }else if(rd instanceof VReg){
             prt.println("\tsw " + rd.toString()+", " + -(((VReg) rd).id + 1) * 4 + "(s0)");
-        }
-        if(rd instanceof Symbol){
+        }else if(rd instanceof Symbol){
             prt.println("\tsw " + rd.toString() + ", " + ((Symbol) rd).name + ", t6");
         }
         rd.color=null;

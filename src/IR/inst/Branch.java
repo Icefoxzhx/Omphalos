@@ -1,9 +1,6 @@
 package IR.inst;
 
-import IR.operand.Operand;
-import IR.operand.PReg;
-import IR.operand.Symbol;
-import IR.operand.VReg;
+import IR.operand.*;
 
 import java.io.PrintStream;
 
@@ -29,7 +26,7 @@ public class Branch extends Inst{
             prt.println("\tlw t3, " + rs1.toString());
             rs1.color=new PReg("t3");
         }
-        if(rs1.isptr){
+        if(rs1 instanceof Address){
             prt.println("\tlw "+rs1.toString()+", 0("+rs1.toString()+")");
         }
         if(rs2 instanceof VReg && rs2.color==null){
@@ -40,7 +37,7 @@ public class Branch extends Inst{
             prt.println("\tlw t4, " + rs2.toString());
             rs2.color=new PReg("t4");
         }
-        if(rs2!=null&&rs2.isptr){
+        if(rs2 instanceof Address){
             prt.println("\tlw "+rs2.toString()+", 0("+rs2.toString()+")");
         }
         prt.println("\t"+op+" "+rs1.toString()+(rs2==null?"":", "+rs2.toString())+", "+".L"+dest);

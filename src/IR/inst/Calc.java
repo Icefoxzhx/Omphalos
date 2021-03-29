@@ -1,9 +1,6 @@
 package IR.inst;
 
-import IR.operand.Operand;
-import IR.operand.PReg;
-import IR.operand.Symbol;
-import IR.operand.VReg;
+import IR.operand.*;
 
 import java.io.PrintStream;
 
@@ -32,7 +29,7 @@ public class Calc extends Inst{
             prt.println("\tlw t3, " + rs1.toString());
             rs1.color=new PReg("t3");
         }
-        if(rs1.isptr){
+        if(rs1 instanceof Address){
             prt.println("\tlw "+rs1.toString()+", 0("+rs1.toString()+")");
         }
         if(rs2 instanceof VReg && rs2.color==null){
@@ -43,20 +40,19 @@ public class Calc extends Inst{
             prt.println("\tlw t4, " + rs2.toString());
             rs2.color=new PReg("t4");
         }
-        if(rs2!=null&&rs2.isptr){
+        if(rs2 instanceof Address){
             prt.println("\tlw "+rs2.toString()+", 0("+rs2.toString()+")");
         }
         if((rd instanceof VReg|| rd instanceof Symbol) && rd.color==null){
             rd.color=new PReg("t5");
         }
         prt.println("\t"+op+" "+rd.toString()+", "+rs1.toString()+(rs2==null?"":", "+rs2.toString()));
-        if(rd.isptr){
+        if(rd instanceof Address){
             prt.println("\tlw t6," + -(((VReg) rd).id + 1) * 4 + "(s0)");
             prt.println("\tsw " + rd.toString()+",  0(t6)");
         }else if(rd instanceof VReg){
             prt.println("\tsw " + rd.toString() + ", " + -(((VReg) rd).id + 1) * 4 + "(s0)");
-        }
-        if(rd instanceof Symbol){
+        }else if(rd instanceof Symbol){
             prt.println("\tsw " + rd.toString() + ", " + ((Symbol) rd).name + ", t6");
         }
         rd.color=null;

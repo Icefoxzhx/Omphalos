@@ -29,20 +29,21 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(SingleVarDefStmt it) {
         if (it.var.isGlobal) {
-            if (!MainInited) globals.add(it);
-            else {
-                Root.globals.add(it.name);
+            if(!MainInited){
                 it.var.Vregid = new Symbol(it.name);
+                Root.globals.add(it.name);
+                globals.add(it);
+            }else {
                 if (it.expr != null) {
                     it.expr.accept(this);
-                    currentBlock.insts.add(new Store(it.expr.Vregid, it.var.Vregid));
+                    currentBlock.insts.add(new Mv( it.var.Vregid,it.expr.Vregid));
                 }
             }
         } else {
             it.var.Vregid = new VReg(++currentBlock.Vregnum);
             if (it.expr != null) {
                 it.expr.accept(this);
-                currentBlock.insts.add(new Store(it.expr.Vregid, it.var.Vregid));
+                currentBlock.insts.add(new Mv(it.var.Vregid,it.expr.Vregid));
             }
         }
     }
@@ -185,13 +186,14 @@ public class IRBuilder implements ASTVisitor {
     }
 
     public Operand newArray(int i,NewExpr it){
-        Operand nowreg=new VReg(++currentBlock.Vregnum);
+        VReg nowreg=new VReg(++currentBlock.Vregnum);
         Operand sz=it.exprList.get(i).Vregid;
         currentBlock.insts.add(new Calc("addi",new PReg("a0"),sz,new Imm(1)));
+        currentBlock.insts.add(new Calc("slli",new PReg("a0"),new PReg("a0"),new Imm(2)));
         currentBlock.insts.add(new Call("__Om_builtin_malloc"));
         currentBlock.insts.add(new Mv(nowreg,new PReg("a0")));
-        nowreg.isptr=true;
-        currentBlock.insts.add(new Store(sz,nowreg));
+        Operand nowregaddr=new Address(nowreg);
+        currentBlock.insts.add(new Mv(nowregaddr,sz));
         if(i<it.exprList.size()-1){
             Operand iter=new VReg(++currentBlock.Vregnum);
             currentBlock.insts.add(new Mv(iter,sz));
@@ -201,12 +203,12 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.insts.add(new Label(loopcond));
             currentBlock.insts.add(new Branch("beqz",iter,null,loopend));
 
-            Operand res=new VReg(++currentBlock.Vregnum);
+            VReg res=new VReg(++currentBlock.Vregnum);
             currentBlock.insts.add(new Calc("slli",res,iter,new Imm(2)));
             currentBlock.insts.add(new Calc("add",res,nowreg,res));
-            res.isptr=true;
+            Operand resaddr=new Address(res);
 
-            currentBlock.insts.add(new Store(newArray(i+1,it),res));
+            currentBlock.insts.add(new Mv(resaddr,newArray(i+1,it)));
 
             currentBlock.insts.add(new Calc("addi",iter,iter,new Imm(-1)));
             currentBlock.insts.add(new J(loopcond));
@@ -224,7 +226,7 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.insts.add(new Li(new PReg("a0"),new Imm(((ClassType)it.type).size())));
             currentBlock.insts.add(new Call("__Om_builtin_malloc"));
             it.Vregid=new VReg(++currentBlock.Vregnum);
-            currentBlock.insts.add(new Store(new PReg("a0"),it.Vregid));
+            currentBlock.insts.add(new Mv(it.Vregid,new PReg("a0")));
             if(((ClassType)it.type).constructor!=null) currentBlock.insts.add(new Call(((ClassType)it.type).constructor.abs_name));
         }
     }
@@ -304,8 +306,8 @@ public class IRBuilder implements ASTVisitor {
         it.expr1.accept(this);
         it.expr2.accept(this);
         if(it.expr1.type.isString()){
-            currentBlock.insts.add(new Load(new PReg("a0"),it.expr1.Vregid));
-            currentBlock.insts.add(new Load(new PReg("a1"),it.expr2.Vregid));
+            currentBlock.insts.add(new Mv(new PReg("a0"),it.expr1.Vregid));
+            currentBlock.insts.add(new Mv(new PReg("a1"),it.expr2.Vregid));
             switch(it.op) {
                 case "+":
                     currentBlock.insts.add(new Call("__Om_builtin_str_add"));
@@ -329,7 +331,7 @@ public class IRBuilder implements ASTVisitor {
                     currentBlock.insts.add(new Call("__Om_builtin_str_ne"));
                     break;
             }
-            currentBlock.insts.add(new Store(new PReg("a0"),it.Vregid));
+            currentBlock.insts.add(new Mv(it.Vregid,new PReg("a0")));
             return;
         }
         switch(it.op){
@@ -395,6 +397,11 @@ public class IRBuilder implements ASTVisitor {
         it.exprList.forEach(x->x.accept(this));
         if(it.base instanceof MemberAccessExpr){
             it.base.accept(this);
+            if (((MemberAccessExpr) it.base).base.type instanceof ArrayType && ((FuncSymbol)it.base.type).name.equals("size")) {
+                it.Vregid=new VReg(++currentBlock.Vregnum);
+                currentBlock.insts.add(new Load(it.Vregid,it.base.Vregid));
+                return;
+            }
             currentBlock.insts.add(new Mv(new PReg("a0"),it.base.Vregid));
             for(int i=0;i<it.exprList.size();++i){
                 if(i+1<8){
@@ -414,7 +421,7 @@ public class IRBuilder implements ASTVisitor {
         }
         currentBlock.insts.add(new Call(((FuncSymbol)it.base.type).abs_name));
 
-         it.Vregid=new VReg(++currentBlock.Vregnum);
+        it.Vregid=new VReg(++currentBlock.Vregnum);
         currentBlock.insts.add(new Mv(it.Vregid,new PReg("a0")));
     }
 
@@ -424,22 +431,21 @@ public class IRBuilder implements ASTVisitor {
         if(it.isFunc){
             it.Vregid=it.base.Vregid;
         }else{
-            it.Vregid=new VReg(++currentBlock.Vregnum);
-            currentBlock.insts.add(new Calc("addi",it.Vregid,it.base.Vregid,new Imm(((Imm)it.var.Vregid).val*4)));
-            it.Vregid.isptr=true;
+            VReg tmp=new VReg(++currentBlock.Vregnum);
+            currentBlock.insts.add(new Calc("addi",tmp,it.base.Vregid,new Imm(((Imm)it.var.Vregid).val*4)));
+            it.Vregid=new Address(tmp);
         }
-
     }
 
     @Override
     public void visit(SubscriptExpr it) {
         it.base.accept(this);
         it.offset.accept(this);
-        it.Vregid=new VReg(++currentBlock.Vregnum);
-        currentBlock.insts.add(new Calc("addi",it.Vregid,it.offset.Vregid,new Imm(1)));
-        currentBlock.insts.add(new Calc("slli",it.Vregid,it.Vregid,new Imm(2)));
-        currentBlock.insts.add(new Calc("add",it.Vregid,it.base.Vregid,it.Vregid));
-        it.Vregid.isptr=true;
+        VReg tmp=new VReg(++currentBlock.Vregnum);
+        currentBlock.insts.add(new Calc("addi",tmp,it.offset.Vregid,new Imm(1)));
+        currentBlock.insts.add(new Calc("slli",tmp,tmp,new Imm(2)));
+        currentBlock.insts.add(new Calc("add",tmp,it.base.Vregid,tmp));
+        it.Vregid=new Address(tmp);
     }
 
     @Override

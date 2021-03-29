@@ -1,14 +1,7 @@
 package IR.operand;
 
-public class Address extends Operand{
-	public Operand base,offset;
-	public Address(Operand base, Operand offset){
-		this.offset=offset;
-		this.base=base;
-		this.isptr=false;
-	}
-	@Override
-	public String toString() {
-		return null;
+public class Address extends VReg{
+	public Address(VReg base){
+		super(base.id);
 	}
 }
