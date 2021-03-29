@@ -70,7 +70,9 @@ public class IRBuilder implements ASTVisitor {
 
         if(it.inClass==false){
             for(int i=0;i<it.paramList.size();++i){
-                if(i<8) it.paramList.get(i).var.Vregid=new PReg("a"+i);
+                it.paramList.get(i).var.Vregid=new VReg(++currentBlock.Vregnum);
+                if(i<8) currentBlock.insts.add(new Mv(it.paramList.get(i).var.Vregid,new PReg("a"+i)));
+                //todo:else?
                 else it.paramList.get(i).var.Vregid=new VReg(++currentBlock.Vregnum);
             }
             if(it.name.equals("main")){
@@ -84,8 +86,11 @@ public class IRBuilder implements ASTVisitor {
                 currentBlock.insts.add(new J("Returnof"+currentBlock.name));
             }
         }else{
+            currentBlock.insts.add(new Mv(new VReg(++currentBlock.Vregnum),new PReg("a0")));
             for(int i=0;i<it.paramList.size();++i){
-                if(i+1<8) it.paramList.get(i).var.Vregid=new PReg("a"+(i+1));
+                it.paramList.get(i).var.Vregid=new VReg(++currentBlock.Vregnum);
+                if(i+1<8) currentBlock.insts.add(new Mv(it.paramList.get(i).var.Vregid,new PReg("a"+(i+1))));
+                //todo:else?
                 else it.paramList.get(i).var.Vregid=new VReg(++currentBlock.Vregnum);
             }
             it.block.accept(this);
@@ -474,8 +479,7 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ThisExpr it) {
-        it.Vregid=new VReg(++currentBlock.Vregnum);
-        currentBlock.insts.add(new Mv(it.Vregid,new PReg("a0")));
+        it.Vregid=new VReg(2);
     }
 
     @Override
@@ -514,7 +518,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(VarExpr it) {
         if(it.var.isClassMember){
             VReg tmp=new VReg(++currentBlock.Vregnum);
-            currentBlock.insts.add(new Calc("addi",tmp,new PReg("a0"),new Imm(((Imm)it.var.Vregid).val*4)));
+            currentBlock.insts.add(new Calc("addi",tmp,new VReg(2),new Imm(((Imm)it.var.Vregid).val*4)));
             it.Vregid=new Address(tmp);
         }else it.Vregid=it.var.Vregid;
     }
