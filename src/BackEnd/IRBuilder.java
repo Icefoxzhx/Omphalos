@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class IRBuilder implements ASTVisitor {
     public Type currentReturnType;
-    private int loopend,loopcond;
+    private String loopend,loopcond;
     private int Label=0;
     private boolean MainInited=false,returnDone=false;
     private ArrayList<SingleVarDefStmt> globals=new ArrayList<>();
@@ -65,8 +65,7 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(FuncDefNode it) {
-        currentBlock=new IRBlock(it.name);
-        currentBlock.returnlabel=++Label;
+        currentBlock=new IRBlock(it.func.abs_name);
         Root.blocks.add(currentBlock);
 
         if(it.inClass==false){
@@ -82,7 +81,7 @@ public class IRBuilder implements ASTVisitor {
 
             if(it.name.equals("main")&&!it.returnDone){
                 currentBlock.insts.add(new Mv(new PReg("a0"),new PReg("zero")));
-                currentBlock.insts.add(new J(currentBlock.returnlabel));
+                currentBlock.insts.add(new J("Returnof"+currentBlock.name));
             }
         }else{
             for(int i=0;i<it.paramList.size();++i){
@@ -116,8 +115,10 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ForStmt it) {
-        int _loopend=loopend,_loopcond=loopcond;
-        loopcond=++Label;loopend=++Label;
+        String _loopend=loopend,_loopcond=loopcond;
+        ++Label;
+        loopcond="loopcond"+Label;
+        loopend="loopend"+Label;
 
         if(it.init!=null) it.init.accept(this);
 
@@ -136,8 +137,9 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(IfStmt it) {
-        int ifend=++Label,iftrue=++Label,iffalse=ifend;
-        if(it.falseStmt!=null) iffalse=++Label;
+        ++Label;
+        String ifend="ifend"+Label,iftrue="iftrue"+Label,iffalse=ifend;
+        if(it.falseStmt!=null) iffalse="iffalse"+Label;
 
         it.cond.accept(this);
         currentBlock.insts.add(new Branch("beqz",it.cond.Vregid,null,iffalse));
@@ -165,13 +167,15 @@ public class IRBuilder implements ASTVisitor {
             it.returnValue.accept(this);
             currentBlock.insts.add(new Mv(new PReg("a0"),it.returnValue.Vregid));
         }
-        currentBlock.insts.add(new J(currentBlock.returnlabel));
+        currentBlock.insts.add(new J("Returnof"+currentBlock.name));
     }
 
     @Override
     public void visit(WhileStmt it) {
-        int _loopend=loopend,_loopcond=loopcond;
-        loopcond=++Label;loopend=++Label;
+        String _loopend=loopend,_loopcond=loopcond;
+        ++Label;
+        loopcond="loopcond"+Label;
+        loopend="loopend"+Label;
 
         currentBlock.insts.add(new Label(loopcond));
         it.cond.accept(this);
@@ -198,10 +202,13 @@ public class IRBuilder implements ASTVisitor {
             Operand iter=new VReg(++currentBlock.Vregnum);
             currentBlock.insts.add(new Mv(iter,sz));
 
-            int loopcond=++Label,loopend=++Label;
+            ++Label;
+            String _loopend="newloopend"+Label,_loopcond="newloopcond"+Label;
 
-            currentBlock.insts.add(new Label(loopcond));
-            currentBlock.insts.add(new Branch("beqz",iter,null,loopend));
+
+
+            currentBlock.insts.add(new Label(_loopcond));
+            currentBlock.insts.add(new Branch("beqz",iter,null,_loopend));
 
             VReg res=new VReg(++currentBlock.Vregnum);
             currentBlock.insts.add(new Calc("slli",res,iter,new Imm(2)));
@@ -211,9 +218,9 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.insts.add(new Mv(resaddr,newArray(i+1,it)));
 
             currentBlock.insts.add(new Calc("addi",iter,iter,new Imm(-1)));
-            currentBlock.insts.add(new J(loopcond));
+            currentBlock.insts.add(new J(_loopcond));
 
-            currentBlock.insts.add(new Label(loopend));
+            currentBlock.insts.add(new Label(_loopend));
         }
         return nowreg;
     }
@@ -272,7 +279,8 @@ public class IRBuilder implements ASTVisitor {
         it.Vregid=new VReg(++currentBlock.Vregnum);
         switch (it.op) {
             case "&&":
-                int setfalse = ++Label, end = ++Label;
+                ++Label;
+                String setfalse = "setfalse"+Label, end = "setend"+Label;
                 //short-circuit
                 it.expr1.accept(this);
                 currentBlock.insts.add(new Branch("beqz", it.expr1.Vregid, null, setfalse));
@@ -287,8 +295,9 @@ public class IRBuilder implements ASTVisitor {
                 currentBlock.insts.add(new Label(end));
                 return;
             case "||":
-                int settrue = ++Label;
-                end = ++Label;
+                ++Label;
+                String settrue = "settrue"+Label;
+                end = "setend"+Label;
                 //short-circuit
                 it.expr1.accept(this);
                 currentBlock.insts.add(new Branch("bnez", it.expr1.Vregid, null, settrue));
@@ -465,7 +474,8 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ThisExpr it) {
-
+        it.Vregid=new VReg(++currentBlock.Vregnum);
+        currentBlock.insts.add(new Mv(it.Vregid,new PReg("a0")));
     }
 
     @Override
@@ -502,6 +512,10 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(VarExpr it) {
-        it.Vregid=it.var.Vregid;
+        if(it.var.isClassMember){
+            VReg tmp=new VReg(++currentBlock.Vregnum);
+            currentBlock.insts.add(new Calc("addi",tmp,new PReg("a0"),new Imm(((Imm)it.var.Vregid).val*4)));
+            it.Vregid=new Address(tmp);
+        }else it.Vregid=it.var.Vregid;
     }
 }

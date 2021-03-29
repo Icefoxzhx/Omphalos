@@ -91,6 +91,7 @@ public class SemanticChecker implements ASTVisitor{
         currentScope=new Scope(currentScope);
         for(int i=0;i<it.varList.size();++i) {
             it.varList.get(i).var.Vregid = new Imm(i);
+            it.varList.get(i).var.isClassMember=true;
         }
         currentClass.varMap.forEach((key,val)->currentScope.defineVariable(key,val,it.pos));
         currentClass.funcMap.forEach((key,val)->currentScope.defineFunction(key,val,it.pos));

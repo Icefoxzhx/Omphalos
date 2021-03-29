@@ -3,18 +3,18 @@ package IR.inst;
 import java.io.PrintStream;
 
 public class J extends Inst{
-    public int dest;
-    public J(int dest){
+    public String dest;
+    public J(String dest){
         this.dest=dest;
     }
 
     @Override
     public String toString() {
-        return "j .L"+dest;
+        return dest;
     }
 
     @Override
     public void printASM(PrintStream prt) {
-        prt.println("\tj .L"+dest);
+        prt.println("\tj ."+dest);
     }
 }

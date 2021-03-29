@@ -7,9 +7,9 @@ import java.io.PrintStream;
 public class Branch extends Inst{
     public String op;
     public Operand rs1, rs2;
-    public int dest;
+    public String dest;
 
-    public Branch(String op, Operand rs1, Operand rs2, int dest) {
+    public Branch(String op, Operand rs1, Operand rs2, String dest) {
         this.op = op;
         this.rs1 = rs1;
         this.rs2 = rs2;
@@ -40,7 +40,7 @@ public class Branch extends Inst{
         if(rs2 instanceof Address){
             prt.println("\tlw "+rs2.toString()+", 0("+rs2.toString()+")");
         }
-        prt.println("\t"+op+" "+rs1.toString()+(rs2==null?"":", "+rs2.toString())+", "+".L"+dest);
+        prt.println("\t"+op+" "+rs1.toString()+(rs2==null?"":", "+rs2.toString())+", ."+dest);
         rs1.color=null;
         if(rs2!=null) rs2.color=null;
     }

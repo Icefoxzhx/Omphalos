@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class IRBlock{
     public ArrayList<Inst> insts=new ArrayList<>();
     public String name;
-    public int returnlabel;
     public int Vregnum=1;
     public IRBlock(String name){
         this.name=name;
@@ -29,7 +28,7 @@ public class IRBlock{
 
         insts.forEach(inst->inst.printASM(prt));
 
-        System.out.println(".L"+returnlabel+":");
+        System.out.println(".Returnof"+name+":");
         System.out.println("\tlw\ts0,"+(SMEM-4)+"(sp)");
         System.out.println("\tlw\tra," + String.valueOf(SMEM- 8) + "(sp)");
         System.out.println("\taddi\tsp,sp," + String.valueOf(SMEM));
