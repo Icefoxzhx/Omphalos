@@ -101,6 +101,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(ClassDefNode it) {
         // no default assign...?
         it.funcList.forEach(x->x.accept(this));
+        if(it.constructor!=null) it.constructor.accept(this);
     }
 
     @Override
@@ -128,9 +129,10 @@ public class IRBuilder implements ASTVisitor {
         if(it.init!=null) it.init.accept(this);
 
         currentBlock.insts.add(new Label(loopcond));
-        if(it.cond!=null) it.cond.accept(this);
-        currentBlock.insts.add(new Branch("beqz",it.cond.Vregid,null,loopend));
-
+        if(it.cond!=null){
+            it.cond.accept(this);
+            currentBlock.insts.add(new Branch("beqz",it.cond.Vregid,null,loopend));
+        }
         it.body.accept(this);
         if(it.incr!=null) it.incr.accept(this);
         currentBlock.insts.add(new J(loopcond));
