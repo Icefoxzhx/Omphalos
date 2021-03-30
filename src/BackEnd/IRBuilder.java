@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class IRBuilder implements ASTVisitor {
     public Type currentReturnType;
-    private String loopend,loopcond;
+    private String currentloopend,currentloopcond;
     private int Label=0;
     private boolean MainInited=false,returnDone=false;
     private ArrayList<SingleVarDefStmt> globals=new ArrayList<>();
@@ -106,12 +106,12 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(BreakStmt it) {
-        currentBlock.insts.add(new J(loopend));
+        currentBlock.insts.add(new J(currentloopend));
     }
 
     @Override
     public void visit(ContinueStmt it) {
-        currentBlock.insts.add(new J(loopcond));
+        currentBlock.insts.add(new J(currentloopcond));
     }
 
     @Override
@@ -121,10 +121,11 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ForStmt it) {
-        String _loopend=loopend,_loopcond=loopcond;
         ++Label;
-        loopcond="loopcond"+Label;
-        loopend="loopend"+Label;
+        String _loopend=currentloopend,_loopcond=currentloopcond;
+        String loopcond="loopcond"+Label,loopincr="loopincr"+Label,loopend="loopend"+Label;
+        currentloopcond=(it.incr==null)?loopcond:loopincr;
+        currentloopend=loopend;
 
         if(it.init!=null) it.init.accept(this);
 
@@ -134,12 +135,16 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.insts.add(new Branch("beqz",it.cond.Vregid,null,loopend));
         }
         it.body.accept(this);
-        if(it.incr!=null) it.incr.accept(this);
+        if(it.incr!=null){
+            currentBlock.insts.add(new Label(loopincr));
+            it.incr.accept(this);
+        }
         currentBlock.insts.add(new J(loopcond));
 
         currentBlock.insts.add(new Label(loopend));
 
-        loopend=_loopend;loopcond=_loopcond;
+        currentloopend=_loopend;
+        currentloopcond=_loopcond;
     }
 
     @Override
@@ -179,10 +184,11 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(WhileStmt it) {
-        String _loopend=loopend,_loopcond=loopcond;
         ++Label;
-        loopcond="loopcond"+Label;
-        loopend="loopend"+Label;
+        String _loopend=currentloopend,_loopcond=currentloopcond;
+        String loopcond="loopcond"+Label,loopend="loopend"+Label;
+        currentloopcond=loopcond;
+        currentloopend=loopend;
 
         currentBlock.insts.add(new Label(loopcond));
         it.cond.accept(this);
@@ -193,7 +199,8 @@ public class IRBuilder implements ASTVisitor {
 
         currentBlock.insts.add(new Label(loopend));
 
-        loopend=_loopend;loopcond=_loopcond;
+        currentloopend=_loopend;
+        currentloopcond=_loopcond;
     }
 
     public Operand newArray(int i,NewExpr it){
