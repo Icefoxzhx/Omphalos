@@ -67,7 +67,7 @@ public class SemanticChecker implements ASTVisitor{
         if(it.type!=null) currentReturnType=globalScope.getType(it.type);
         else currentReturnType=new PrimitiveType("void");
         if(currentClass!=null){
-           it.inClass=true;
+           it.func.inClass=true;
            it.func.abs_name="_"+currentClass.name+"_"+it.func.name;
         }
         else it.func.abs_name=it.func.name;

@@ -6,6 +6,7 @@ public class FuncSymbol extends Type{
     public Type returnType=null;
     public String name;
     public String abs_name;
+    public boolean inClass=false;
     public ArrayList<VarSymbol> paramList=new ArrayList<>();
     public FuncSymbol(String name){
         this.name=name;

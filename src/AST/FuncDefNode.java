@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class FuncDefNode extends ASTNode{
     public String name;
     public FuncSymbol func;
-    public boolean inClass=false,returnDone=false;
+    public boolean returnDone=false;
     public TypeNode type;
     public BlockStmt block;
     public ArrayList<SingleVarDefStmt> paramList=new ArrayList<>();

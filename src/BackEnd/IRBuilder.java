@@ -68,7 +68,7 @@ public class IRBuilder implements ASTVisitor {
         currentBlock=new IRBlock(it.func.abs_name);
         Root.blocks.add(currentBlock);
 
-        if(it.inClass==false){
+        if(it.func.inClass==false){
             for(int i=0;i<it.paramList.size();++i){
                 it.paramList.get(i).var.Vregid=new VReg(++currentBlock.Vregnum);
                 if(i<8) currentBlock.insts.add(new Mv(it.paramList.get(i).var.Vregid,new PReg("a"+i)));
@@ -419,6 +419,15 @@ public class IRBuilder implements ASTVisitor {
                 return;
             }
             currentBlock.insts.add(new Mv(new PReg("a0"),it.base.Vregid));
+            for(int i=0;i<it.exprList.size();++i){
+                if(i+1<8){
+                    currentBlock.insts.add(new Mv(new PReg("a"+(i+1)),it.exprList.get(i).Vregid));
+                }else{
+                    //todo:more parameters
+                }
+            }
+        }else if(((FuncSymbol)it.base.type).inClass){
+            currentBlock.insts.add(new Mv(new PReg("a0"),new VReg(2)));
             for(int i=0;i<it.exprList.size();++i){
                 if(i+1<8){
                     currentBlock.insts.add(new Mv(new PReg("a"+(i+1)),it.exprList.get(i).Vregid));
