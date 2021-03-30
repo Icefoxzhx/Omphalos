@@ -22,7 +22,7 @@ public class Calc extends Inst{
     @Override
     public void printASM(PrintStream prt) {
         if(rs1 instanceof VReg && rs1.color==null){
-            prt.println("\tlw t3, " + -(((VReg) rs1).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t3, " + printVReg(-(((VReg) rs1).id + 1) * 4));
             rs1.color=new PReg("t3");
         }
         if(rs1 instanceof Symbol && rs1.color==null){
@@ -33,7 +33,7 @@ public class Calc extends Inst{
             prt.println("\tlw "+rs1.toString()+", 0("+rs1.toString()+")");
         }
         if(rs2 instanceof VReg && rs2.color==null){
-            prt.println("\tlw t4, " + -(((VReg) rs2).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t4, " + printVReg(-(((VReg) rs2).id + 1) * 4));
             rs2.color=new PReg("t4");
         }
         if(rs2 instanceof Symbol && rs2.color==null){
@@ -48,10 +48,10 @@ public class Calc extends Inst{
         }
         prt.println("\t"+op+" "+rd.toString()+", "+rs1.toString()+(rs2==null?"":", "+rs2.toString()));
         if(rd instanceof Address){
-            prt.println("\tlw t6," + -(((VReg) rd).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t6," + printVReg(-(((VReg) rd).id + 1) * 4));
             prt.println("\tsw " + rd.toString()+",  0(t6)");
         }else if(rd instanceof VReg){
-            prt.println("\tsw " + rd.toString() + ", " + -(((VReg) rd).id + 1) * 4 + "(s0)");
+            prt.println("\tsw " + rd.toString() + ", " + printVReg(-(((VReg) rd).id + 1) * 4));
         }else if(rd instanceof Symbol){
             prt.println("\tsw " + rd.toString() + ", " + ((Symbol) rd).name + ", t6");
         }

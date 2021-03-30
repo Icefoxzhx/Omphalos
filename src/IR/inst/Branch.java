@@ -19,7 +19,7 @@ public class Branch extends Inst{
     @Override
     public void printASM(PrintStream prt) {
         if(rs1 instanceof VReg && rs1.color==null){
-            prt.println("\tlw t3, " + -(((VReg) rs1).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t3, " + printVReg(-(((VReg) rs1).id + 1) * 4));
             rs1.color=new PReg("t3");
         }
         if(rs1 instanceof Symbol && rs1.color==null){
@@ -30,7 +30,7 @@ public class Branch extends Inst{
             prt.println("\tlw "+rs1.toString()+", 0("+rs1.toString()+")");
         }
         if(rs2 instanceof VReg && rs2.color==null){
-            prt.println("\tlw t4, " + -(((VReg) rs2).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t4, " + printVReg(-(((VReg) rs2).id + 1) * 4));
             rs2.color=new PReg("t4");
         }
         if(rs2 instanceof Symbol && rs2.color==null){

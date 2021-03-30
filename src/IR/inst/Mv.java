@@ -14,7 +14,7 @@ public class Mv extends Inst{
     @Override
     public void printASM(PrintStream prt) {
         if(rs instanceof VReg && rs.color==null){
-            prt.println("\tlw t3, " + -(((VReg) rs).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t3, " + printVReg(-(((VReg) rs).id + 1) * 4));
             rs.color=new PReg("t3");
         }
         if(rs instanceof Symbol && rs.color==null){
@@ -31,10 +31,10 @@ public class Mv extends Inst{
         prt.println("\tmv "+rd.toString()+","+rs.toString());
 
         if(rd instanceof Address){
-            prt.println("\tlw t6," + -(((VReg) rd).id + 1) * 4 + "(s0)");
+            prt.println("\tlw t6," + printVReg(-(((VReg) rd).id + 1) * 4));
             prt.println("\tsw " + rd.toString()+",  0(t6)");
         }else if(rd instanceof VReg){
-            prt.println("\tsw " + rd.toString()+", " + -(((VReg) rd).id + 1) * 4 + "(s0)");
+            prt.println("\tsw " + rd.toString()+", " + printVReg(-(((VReg) rd).id + 1) * 4));
         }else if(rd instanceof Symbol){
             prt.println("\tsw " + rd.toString() + ", " + ((Symbol) rd).name + ", t6");
         }
