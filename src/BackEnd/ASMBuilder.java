@@ -197,7 +197,6 @@ public class ASMBuilder implements ASTVisitor {
             }
         }else{
             thisptr=new VReg("this");
-            thisptr.isptr=true;
             currentBlock.insts.add(new Mv(thisptr,root.getPReg(10)));
             for(int i=0;i<it.paramList.size();++i){
                 tmp=new VReg(it.paramList.get(i).name);
@@ -214,6 +213,8 @@ public class ASMBuilder implements ASTVisitor {
         if(it.returnNum<2){
             currentFunc.endBlock=currentBlock;
         }else{
+            currentBlock.succ.add(currentFunc.endBlock);
+            currentFunc.endBlock.pred.add(currentBlock);
             currentBlock=currentFunc.endBlock;
             currentFunc.blocks.add(currentBlock);
         }
@@ -272,9 +273,9 @@ public class ASMBuilder implements ASTVisitor {
             currentBlock.insts.add(new Branch("beqz", getReg(it.cond.operand),null, loopend));
             currentBlock.succ.add(loopend);
             loopend.pred.add(currentBlock);
-            currentBlock.succ.add(loopbody);
-            loopbody.pred.add(currentBlock);
         }
+        currentBlock.succ.add(loopbody);
+        loopbody.pred.add(currentBlock);
         currentBlock=loopbody;
         currentFunc.blocks.add(currentBlock);
         it.body.accept(this);
