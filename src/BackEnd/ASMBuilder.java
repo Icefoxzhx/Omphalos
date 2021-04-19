@@ -287,9 +287,9 @@ public class ASMBuilder implements ASTVisitor {
             currentFunc.blocks.add(currentBlock);
             it.incr.accept(this);
         }
-        currentBlock.insts.add(new J(loopcond));
-        currentBlock.succ.add(loopcond);
-        loopcond.pred.add(currentBlock);
+        currentBlock.insts.add(new J(it.cond==null?loopbody:loopcond));
+        currentBlock.succ.add(it.cond==null?loopbody:loopcond);
+        (it.cond==null?loopbody:loopcond).pred.add(currentBlock);
 
         currentBlock=loopend;
         currentFunc.blocks.add(currentBlock);
@@ -460,7 +460,7 @@ public class ASMBuilder implements ASTVisitor {
 
     @Override
     public void visit(NullConstExpr it) {
-        it.operand = root.getPReg(0);
+        it.operand = new Imm(0);
     }
 
     @Override
