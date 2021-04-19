@@ -360,6 +360,8 @@ public class ASMBuilder implements ASTVisitor {
         currentloopcond=loopcond;
         currentloopend=loopend;
 
+        currentBlock.succ.add(loopcond);
+        loopcond.pred.add(currentBlock);
         currentBlock=loopcond;
         currentFunc.blocks.add(currentBlock);
         it.cond.accept(this);
@@ -649,7 +651,7 @@ public class ASMBuilder implements ASTVisitor {
             it.base.accept(this);
             if (((MemberAccessExpr) it.base).base.type instanceof ArrayType && ((FuncSymbol)it.base.type).name.equals("size")) {
                 it.operand =new VReg("ArraySize");
-                currentBlock.insts.add(new Load((Register) it.operand,(Register) it.base.operand,new Imm(0)));
+                currentBlock.insts.add(new Load((Register) it.operand, getReg(it.base.operand),new Imm(0)));
                 return;
             }
             currentBlock.insts.add(new Mv(root.getPReg(10),getReg(it.base.operand) ));

@@ -437,7 +437,8 @@ public class RegAllocator{
             Block block=currentFunction.blocks.get(i);
             if(block.insts.isEmpty()){
                 Block dest=block.succ.get(0);
-                dest.pred.retainAll(block.pred);
+                dest.pred.removeAll(block.pred);
+                dest.pred.addAll(block.pred);
                 for(Block b : currentFunction.blocks){
                     for(int ii=0;ii<b.succ.size();++ii) if (b.succ.get(ii)==block) b.succ.set(ii,dest);
                     for(Inst inst : b.insts){
