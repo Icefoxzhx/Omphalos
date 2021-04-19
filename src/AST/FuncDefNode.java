@@ -8,11 +8,10 @@ import java.util.ArrayList;
 public class FuncDefNode extends ASTNode{
     public String name;
     public FuncSymbol func;
-    public boolean returnDone=false;
     public TypeNode type;
     public BlockStmt block;
     public ArrayList<SingleVarDefStmt> paramList=new ArrayList<>();
-
+    public Integer returnNum=0;
     public FuncDefNode(position pos,String name,TypeNode type,BlockStmt block){
         super(pos);
         this.name=name;

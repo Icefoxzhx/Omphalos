@@ -1,7 +1,7 @@
 import AST.ProgramNode;
 import FrontEnd.*;
 import BackEnd.*;
-import IR.IRBlockList;
+import ASM.Root;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -11,9 +11,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.PrintStream;
 
 public class Main{
     public static void main(String[] args)throws Exception{
@@ -46,9 +44,10 @@ public class Main{
             global.varMap.clear();
             new SemanticChecker(global).visit(ASTRoot);
             if(!codegen) return;
-            IRBlockList Root=new IRBlockList();
-            new IRBuilder(Root).visit(ASTRoot);
-            Root.printASM(System.out);
+            Root Root=new Root();
+            new ASMBuilder(Root).visit(ASTRoot);
+            new RegAllocator(Root).Run();
+            new ASMPrinter(Root).run();
         } catch(Error er){
             System.err.println(er.toString());
             throw new RuntimeException();

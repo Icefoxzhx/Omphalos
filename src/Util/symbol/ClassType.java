@@ -1,5 +1,7 @@
 package Util.symbol;
 
+import ASM.operand.Register;
+
 import java.util.HashMap;
 
 public class ClassType extends Type{

@@ -1,8 +1,8 @@
 package FrontEnd;
 
+import ASM.Function;
 import AST.*;
-import IR.operand.Address;
-import IR.operand.Imm;
+import ASM.operand.Imm;
 import Util.error.semanticError;
 import Util.symbol.*;
 
@@ -10,7 +10,7 @@ public class SemanticChecker implements ASTVisitor{
     public Scope globalScope,currentScope;
     public Type currentReturnType;
     public ClassType currentClass;
-    public boolean returnDone;
+    public int returnNum=0;
     public int loopDepth=0;
 
     public SemanticChecker(Scope global){
@@ -71,17 +71,18 @@ public class SemanticChecker implements ASTVisitor{
            it.func.abs_name="_"+currentClass.name+"_"+it.func.name;
         }
         else it.func.abs_name=it.func.name;
-        returnDone=false;
+        it.func.func=new Function(it.func.abs_name);
+        returnNum = 0;
         currentScope=new Scope(currentScope);
         it.paramList.forEach(x->{
             x.var=new VarSymbol(x.name, globalScope.getType(x.type));
             currentScope.defineVariable(x.name,x.var,x.pos);
         });
         it.block.accept(this);
-        currentScope=currentScope.parentScope;
-        it.returnDone=returnDone;
-        if(it.name.equals("main")) returnDone=true;
-        if(!returnDone&&it.type!=null&&!it.type.Type.equals("void"))
+        currentScope = currentScope.parentScope;
+        it.returnNum = returnNum;
+        if(it.name.equals("main")) returnNum = 1;
+        if(returnNum==0 && it.type!=null&&!it.type.Type.equals("void"))
             throw new semanticError("No return",it.pos);
     }
 
@@ -90,7 +91,7 @@ public class SemanticChecker implements ASTVisitor{
         currentClass=(ClassType) globalScope.typeMap.get(it.name);
         currentScope=new Scope(currentScope);
         for(int i=0;i<it.varList.size();++i) {
-            it.varList.get(i).var.Vregid = new Imm(i);
+            it.varList.get(i).var.operand = new Imm(i);
             it.varList.get(i).var.isClassMember=true;
         }
         currentClass.varMap.forEach((key,val)->currentScope.defineVariable(key,val,it.pos));
@@ -156,7 +157,7 @@ public class SemanticChecker implements ASTVisitor{
 
     @Override
     public void visit(ReturnStmt it) {
-        returnDone=true;
+        returnNum++;
         if(it.returnValue!=null){
             it.returnValue.accept(this);
             if(!it.returnValue.type.equals(currentReturnType)) throw new semanticError("return type error", it.pos);

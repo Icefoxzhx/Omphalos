@@ -6,9 +6,9 @@ import Util.position;
 import java.util.HashMap;
 
 public class Scope{
-    public HashMap<String,VarSymbol>varMap=new HashMap<>();
+    public HashMap<String, VarSymbol>varMap=new HashMap<>();
     public HashMap<String, FuncSymbol>funcMap=new HashMap<>();
-    public HashMap<String,Type> typeMap=new HashMap<>();
+    public HashMap<String, Type> typeMap=new HashMap<>();
     public Scope parentScope;
 
     public Scope(Scope parentScope){

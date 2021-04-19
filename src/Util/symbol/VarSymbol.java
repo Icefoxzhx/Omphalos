@@ -1,11 +1,11 @@
 package Util.symbol;
 
-import IR.operand.Operand;
+import ASM.operand.Operand;
 
 public class VarSymbol{
     public String name;
     public Type type;
-    public Operand Vregid;
+    public Operand operand;
     public boolean isGlobal=false,isClassMember=false;
     public VarSymbol(String name){
         this.name=name;
