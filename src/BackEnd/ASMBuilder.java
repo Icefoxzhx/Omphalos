@@ -649,7 +649,38 @@ public class ASMBuilder implements ASTVisitor {
                 return;
             }
         }
-        Register rs1=getReg(it.expr1.operand), rs2=getReg(it.expr2.operand);
+        Register rs1=getReg(it.expr1.operand);
+        if(it.expr2.operand instanceof Imm){
+            switch(it.op) {
+                case "<<":
+                    currentBlock.insts.add(new Calc("slli", tmp, rs1, it.expr2.operand));
+                    return;
+                case ">>":
+                    currentBlock.insts.add(new Calc("srai", tmp, rs1, it.expr2.operand));
+                    return;
+                case "&":
+                    currentBlock.insts.add(new Calc("andi", tmp, rs1, it.expr2.operand));
+                    return;
+                case "^":
+                    currentBlock.insts.add(new Calc("xori", tmp, rs1, it.expr2.operand));
+                    return;
+                case "|":
+                    currentBlock.insts.add(new Calc("ori", tmp, rs1, it.expr2.operand));
+                    return;
+                case "+":
+                    currentBlock.insts.add(new Calc("addi", tmp, rs1, it.expr2.operand));
+                    return;
+                case "==":
+                    currentBlock.insts.add(new Calc("xori", tmp, rs1, it.expr2.operand));
+                    currentBlock.insts.add(new Calc("seqz", tmp,tmp,null));
+                    return;
+                case "!=":
+                    currentBlock.insts.add(new Calc("xori", tmp, rs1, it.expr2.operand));
+                    currentBlock.insts.add(new Calc("snez", tmp,tmp,null));
+                    return;
+            }
+        }
+        Register rs2=getReg(it.expr2.operand);
         switch(it.op){
             case "*":
                 currentBlock.insts.add(new Calc("mul", tmp, rs1, rs2));

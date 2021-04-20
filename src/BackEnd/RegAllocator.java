@@ -4,10 +4,7 @@ import ASM.Block;
 import ASM.Function;
 import ASM.Root;
 import ASM.inst.*;
-import ASM.operand.Imm;
-import ASM.operand.PReg;
-import ASM.operand.Register;
-import ASM.operand.VReg;
+import ASM.operand.*;
 
 import java.util.*;
 
@@ -185,6 +182,7 @@ public class RegAllocator{
                     t.forEach(x->moveList.get(x).add((Mv)inst));
                     workListMoves.add((Mv) inst);
                 }
+                if(inst instanceof Sw) AddEdge(((Sw) inst).rt, ((Sw) inst).rd);
                 live.addAll(inst.getDef());
                 inst.getDef().forEach(a->live.forEach(c-> AddEdge(a,c)));
                 live.removeAll(inst.getDef());
@@ -249,6 +247,7 @@ public class RegAllocator{
         return true;
     }
     public boolean Conservative(ArrayList<Register> nodes, ArrayList<Register> y){
+        nodes.removeAll(y);
         nodes.addAll(y);
         int k=0;
         for(Register node : nodes) if(degree.get(node) >= K) ++k;

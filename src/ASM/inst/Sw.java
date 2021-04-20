@@ -19,7 +19,7 @@ public class Sw extends Inst{
 
     @Override
     public HashSet<Register> getUse() {
-        return new HashSet<>(Arrays.asList(rd,rt));
+        return new HashSet<>(Collections.singletonList(rd));
     }
 
     @Override
