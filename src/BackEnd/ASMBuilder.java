@@ -170,10 +170,6 @@ public class ASMBuilder implements ASTVisitor {
         currentFunc.raSaveReg=tmp;
         currentBlock.insts.add(new Mv(tmp,root.getPReg(1)));
 
-        if(it.returnNum>1){
-            currentFunc.endBlock=new Block(loopDepth,"Returnof" + currentFunc.name);
-        }
-
         if(it.func.inClass==false){
             for(int i=0;i<it.paramList.size();++i){
                 tmp=new VReg(it.paramList.get(i).name);
@@ -190,11 +186,6 @@ public class ASMBuilder implements ASTVisitor {
                 globals.forEach(x->x.accept(this));
             }
             it.block.accept(this);
-
-            if(it.name.equals("main") && it.returnNum==0 ){
-                currentBlock.insts.add(new Mv(root.getPReg(10),root.getPReg(0)));
-                it.returnNum=1;
-            }
         }else{
             thisptr=new VReg("this");
             currentBlock.insts.add(new Mv(thisptr,root.getPReg(10)));
@@ -210,13 +201,24 @@ public class ASMBuilder implements ASTVisitor {
             }
             it.block.accept(this);
         }
-        if(it.returnNum<2){
-            currentFunc.endBlock=currentBlock;
-        }else{
-            currentBlock.succ.add(currentFunc.endBlock);
-            currentFunc.endBlock.pred.add(currentBlock);
+        if(!currentBlock.terminated){
+            if(it.name.equals("main")){
+                currentBlock.insts.add(new Li(root.getPReg(10),new Imm(0),"li"));
+            }
+            currentFunc.returnBlocks.add(currentBlock);
+            currentBlock.terminated=true;
+        }
+        if(currentFunc.returnBlocks.size()>1){
+            currentFunc.endBlock=new Block(loopDepth,"Returnof" + currentFunc.name);
+            currentFunc.returnBlocks.forEach(block->{
+                block.insts.add(new J(currentFunc.endBlock));
+                block.succ.add(currentFunc.endBlock);
+                currentFunc.endBlock.pred.add(block);
+            });
             currentBlock=currentFunc.endBlock;
             currentFunc.blocks.add(currentBlock);
+        }else{
+            currentFunc.endBlock=currentBlock;
         }
         for(int i=0;i<root.getCalleeSave().size();++i){
             currentBlock.insts.add(new Mv(root.getCalleeSave().get(i), currentFunc.calleeSaveReg.get(i)));
@@ -344,11 +346,7 @@ public class ASMBuilder implements ASTVisitor {
             it.returnValue.accept(this);
             currentBlock.insts.add(new Mv(root.getPReg(10), getReg(it.returnValue.operand)));
         }
-        if(currentFunc.endBlock!=null){
-            currentBlock.insts.add(new J(currentFunc.endBlock));
-            currentBlock.succ.add(currentFunc.endBlock);
-            currentFunc.endBlock.pred.add(currentBlock);
-        }
+        currentFunc.returnBlocks.add(currentBlock);
         currentBlock.terminated=true;
     }
 

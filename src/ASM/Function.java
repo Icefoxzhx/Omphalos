@@ -11,7 +11,7 @@ public class Function {
     public ArrayList<Block> blocks=new ArrayList<>();
     public ArrayList<Register> calleeSaveReg=new ArrayList<>();
     public Register raSaveReg;
-
+    public ArrayList<Block> returnBlocks=new ArrayList<>();
     public Function(String name){
         this.name=name;
     }
