@@ -310,12 +310,19 @@ public class ASMBuilder implements ASTVisitor {
         if(it.falseStmt!=null) iffalse=new Block(loopDepth,"iffalse"+Label);
 
         it.cond.accept(this);
-        currentBlock.insts.add(new Branch("beqz",getReg(it.cond.operand),null, iffalse));
-        currentBlock.succ.add(iffalse);
-        iffalse.pred.add(currentBlock);
-        currentBlock.succ.add(iftrue);
-        iftrue.pred.add(currentBlock);
+        if(it.cond.operand instanceof Imm){
+            Block dest=((Imm) it.cond.operand).val==1?iftrue:iffalse;
+            currentBlock.insts.add(new J(dest));
+            currentBlock.succ.add(dest);
+            dest.pred.add(currentBlock);
+        }else{
+            currentBlock.insts.add(new Branch("beqz",getReg(it.cond.operand),null, iffalse));
+            currentBlock.succ.add(iffalse);
+            iffalse.pred.add(currentBlock);
+            currentBlock.succ.add(iftrue);
+            iftrue.pred.add(currentBlock);
 
+        }
         currentBlock=iftrue;
         currentFunc.blocks.add(currentBlock);
         it.trueStmt.accept(this);
@@ -491,19 +498,34 @@ public class ASMBuilder implements ASTVisitor {
                 Block setfalse = new Block(loopDepth,"setfalse"+Label), settrue = new Block(loopDepth,"settrue"+Label), end = new Block(loopDepth,"setend"+Label);
                 //short-circuit
                 it.expr1.accept(this);
-                currentBlock.insts.add(new Branch("beqz", getReg(it.expr1.operand), null, setfalse));
-                currentBlock.succ.add(setfalse);
-                setfalse.pred.add(currentBlock);
-                currentBlock.succ.add(settrue);
-                settrue.pred.add(currentBlock);
-
+                if(it.expr1.operand instanceof Imm){
+                    Block dest= ((Imm) it.expr1.operand).val==1?settrue:setfalse;
+                    currentBlock.insts.add(new J(dest));
+                    currentBlock.succ.add(dest);
+                    dest.pred.add(currentBlock);
+                    currentBlock.terminated=true;
+                }else{
+                    currentBlock.insts.add(new Branch("beqz", getReg(it.expr1.operand), null, setfalse));
+                    currentBlock.succ.add(setfalse);
+                    setfalse.pred.add(currentBlock);
+                    currentBlock.succ.add(settrue);
+                    settrue.pred.add(currentBlock);
+                }
                 currentBlock=settrue;
                 currentFunc.blocks.add(currentBlock);
                 it.expr2.accept(this);
-                currentBlock.insts.add(new Branch("beqz", getReg(it.expr2.operand), null, setfalse));
-                currentBlock.succ.add(setfalse);
-                setfalse.pred.add(currentBlock);
-
+                if(it.expr2.operand instanceof Imm){
+                    if(((Imm) it.expr2.operand).val==0){
+                        currentBlock.insts.add(new J(setfalse));
+                        currentBlock.succ.add(setfalse);
+                        setfalse.pred.add(currentBlock);
+                        currentBlock.terminated=true;
+                    }
+                }else{
+                    currentBlock.insts.add(new Branch("beqz", getReg(it.expr2.operand), null, setfalse));
+                    currentBlock.succ.add(setfalse);
+                    setfalse.pred.add(currentBlock);
+                }
                 currentBlock.insts.add(new Li(tmp, new Imm(1), "li"));
                 currentBlock.insts.add(new J(end));
                 currentBlock.succ.add(end);
@@ -517,6 +539,10 @@ public class ASMBuilder implements ASTVisitor {
 
                 currentBlock=end;
                 currentFunc.blocks.add(currentBlock);
+
+                if(it.expr1.operand instanceof Imm && it.expr2.operand instanceof Imm){
+                    it.operand=new Imm(((Imm) it.expr2.operand).val&((Imm) it.expr2.operand).val);
+                }
                 return;
             case "||":
                 ++Label;
@@ -583,6 +609,32 @@ public class ASMBuilder implements ASTVisitor {
             }
             currentBlock.insts.add(new Mv(tmp,root.getPReg(10)));
             return;
+        }
+        //naive constant folding
+        if(it.expr1.operand instanceof Imm && it.expr2.operand instanceof Imm){
+            if(!((it.op.equals("/")||it.op.equals("%")) && ((Imm) it.expr2.operand).val==0)){
+                int res= switch (it.op){
+                    case "*" -> ((Imm) it.expr1.operand).val * ((Imm) it.expr2.operand).val;
+                    case "/" -> ((Imm) it.expr1.operand).val / (((Imm) it.expr2.operand).val);
+                    case "%" -> ((Imm) it.expr1.operand).val % ((Imm) it.expr2.operand).val;
+                    case "-" -> ((Imm) it.expr1.operand).val - ((Imm) it.expr2.operand).val;
+                    case "<<" -> ((Imm) it.expr1.operand).val << ((Imm) it.expr2.operand).val;
+                    case ">>" -> ((Imm) it.expr1.operand).val >> ((Imm) it.expr2.operand).val;
+                    case "&" -> ((Imm) it.expr1.operand).val & ((Imm) it.expr2.operand).val;
+                    case "^" -> ((Imm) it.expr1.operand).val ^ ((Imm) it.expr2.operand).val;
+                    case "|" -> ((Imm) it.expr1.operand).val | ((Imm) it.expr2.operand).val;
+                    case "+" -> ((Imm) it.expr1.operand).val + ((Imm) it.expr2.operand).val;
+                    case "<" -> ((Imm) it.expr1.operand).val < ((Imm) it.expr2.operand).val ? 1: 0;
+                    case ">" -> ((Imm) it.expr1.operand).val > ((Imm) it.expr2.operand).val ? 1: 0;
+                    case "<=" -> ((Imm) it.expr1.operand).val <= ((Imm) it.expr2.operand).val ? 1: 0;
+                    case ">=" -> ((Imm) it.expr1.operand).val >= ((Imm) it.expr2.operand).val ? 1: 0;
+                    case "==" -> ((Imm) it.expr1.operand).val == ((Imm) it.expr2.operand).val ? 1: 0;
+                    case "!=" -> ((Imm) it.expr1.operand).val >= ((Imm) it.expr2.operand).val ? 1: 0;
+                    default -> 0;
+                };
+                it.operand=new Imm(res);
+                return;
+            }
         }
         Register rs1=getReg(it.expr1.operand), rs2=getReg(it.expr2.operand);
         switch(it.op){

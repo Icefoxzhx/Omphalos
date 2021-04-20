@@ -435,6 +435,14 @@ public class RegAllocator{
     public void RemoveUselessBlock(){
         for (int i=0;i<currentFunction.blocks.size();++i){
             Block block=currentFunction.blocks.get(i);
+            if(block.pred.isEmpty()&&block!=currentFunction.beginBlock){
+                block.succ.forEach(b->{
+                    b.pred.remove(block);
+                });
+                currentFunction.blocks.remove(i);
+                --i;
+                continue;
+            }
             if(block.insts.isEmpty()){
                 Block dest=block.succ.get(0);
                 dest.pred.removeAll(block.pred);
@@ -448,7 +456,31 @@ public class RegAllocator{
                 }
                 currentFunction.blocks.remove(i);
                 --i;
+                continue;
             }
+            if (block.insts.get(0) instanceof J) {
+                Block dest = ((J) block.insts.get(0)).dest;
+                block.succ.forEach(b->{
+                    b.pred.remove(block);
+                });
+                block.pred.forEach(b->{
+                    b.succ.remove(block);
+                    b.succ.add(dest);
+                    dest.pred.remove(b);
+                    dest.pred.add(b);
+                });
+                for (Block b : currentFunction.blocks) {
+                    for (Inst inst : b.insts) {
+                        if (inst instanceof J && ((J) inst).dest == block)
+                            ((J) inst).dest = dest;
+                        if (inst instanceof Branch && ((Branch) inst).dest == block)
+                            ((Branch) inst).dest = dest;
+                    }
+                }
+                currentFunction.blocks.remove(i);
+                i--;
+            }
+
         }
     }
     public void RunFunc(Function func){
