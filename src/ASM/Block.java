@@ -1,6 +1,8 @@
 package ASM;
 
+import ASM.inst.Branch;
 import ASM.inst.Inst;
+import ASM.inst.J;
 
 import java.util.ArrayList;
 
@@ -11,7 +13,17 @@ public class Block {
     public ArrayList<Block> succ=new ArrayList<>();
     public int loopDepth;
     public boolean terminated=false;
-
+    public void removeTerminator(){
+        Block dest;
+        if(insts.get(insts.size()-1) instanceof J){
+            dest=((J) insts.get(insts.size()-1)).dest;
+        }else if(insts.get(insts.size()-1) instanceof Branch){
+            dest=((Branch) insts.get(insts.size()-1)).dest;
+        }else return;
+        dest.pred.remove(this);
+        succ.remove(dest);
+        insts.remove(insts.size()-1);
+    }
     public Block(int loopDepth, String name){
         this.loopDepth=loopDepth;
         this.name="."+name;

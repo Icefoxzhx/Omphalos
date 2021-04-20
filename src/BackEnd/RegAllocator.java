@@ -431,7 +431,15 @@ public class RegAllocator{
             }
         }
     }
-
+    public void RemoveUselessJ(){
+        for(int i=0;i<currentFunction.blocks.size()-1;++i){
+            Block block=currentFunction.blocks.get(i),dest;
+            if(block.insts.get(block.insts.size()-1) instanceof J){
+                dest=((J) block.insts.get(block.insts.size()-1)).dest;
+            }else continue;
+            if(dest==currentFunction.blocks.get(i+1)) block.insts.remove(block.insts.size()-1);
+        };
+    }
     public void RemoveUselessBlock(){
         for (int i=0;i<currentFunction.blocks.size();++i){
             Block block=currentFunction.blocks.get(i);
@@ -478,13 +486,12 @@ public class RegAllocator{
                     }
                 }
                 currentFunction.blocks.remove(i);
-                i--;
+                --i;
+                continue;
             }
-
         }
     }
     public void RunFunc(Function func){
-        currentFunction=func;
         Init();
         LivenessAnalysis();
         Build();
@@ -503,6 +510,7 @@ public class RegAllocator{
             AddSp();
             RemoveDeadMv();
             RemoveUselessBlock();
+            RemoveUselessJ();
         }
         currentFunction=null;
     }
@@ -510,6 +518,9 @@ public class RegAllocator{
     public void Run(){
         root.func.forEach(func->{
             spOffset=0;
+            currentFunction=func;
+            //RemoveUselessJ();
+            //RemoveUselessBlock();
             RunFunc(func);
         });
     }

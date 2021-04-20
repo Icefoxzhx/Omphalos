@@ -211,6 +211,7 @@ public class ASMBuilder implements ASTVisitor {
         if(currentFunc.returnBlocks.size()>1){
             currentFunc.endBlock=new Block(loopDepth,"Returnof" + currentFunc.name);
             currentFunc.returnBlocks.forEach(block->{
+                block.removeTerminator();
                 block.insts.add(new J(currentFunc.endBlock));
                 block.succ.add(currentFunc.endBlock);
                 currentFunc.endBlock.pred.add(block);
@@ -267,6 +268,7 @@ public class ASMBuilder implements ASTVisitor {
         if(it.init!=null) it.init.accept(this);
 
         if(it.cond!=null){
+            currentBlock.insts.add(new J(loopcond));
             currentBlock.succ.add(loopcond);
             loopcond.pred.add(currentBlock);
             currentBlock=loopcond;
@@ -276,12 +278,14 @@ public class ASMBuilder implements ASTVisitor {
             currentBlock.succ.add(loopend);
             loopend.pred.add(currentBlock);
         }
+        currentBlock.insts.add(new J(loopbody));
         currentBlock.succ.add(loopbody);
         loopbody.pred.add(currentBlock);
         currentBlock=loopbody;
         currentFunc.blocks.add(currentBlock);
         it.body.accept(this);
         if(it.incr!=null){
+            currentBlock.insts.add(new J(loopincr));
             currentBlock.succ.add(loopincr);
             loopincr.pred.add(currentBlock);
 
@@ -319,9 +323,9 @@ public class ASMBuilder implements ASTVisitor {
             currentBlock.insts.add(new Branch("beqz",getReg(it.cond.operand),null, iffalse));
             currentBlock.succ.add(iffalse);
             iffalse.pred.add(currentBlock);
+            currentBlock.insts.add(new J(iftrue));
             currentBlock.succ.add(iftrue);
             iftrue.pred.add(currentBlock);
-
         }
         currentBlock=iftrue;
         currentFunc.blocks.add(currentBlock);
@@ -335,6 +339,7 @@ public class ASMBuilder implements ASTVisitor {
             currentFunc.blocks.add(currentBlock);
             it.falseStmt.accept(this);
         }
+        currentBlock.insts.add(new J(ifend));
         currentBlock.succ.add(ifend);
         ifend.pred.add(currentBlock);
 
@@ -366,19 +371,22 @@ public class ASMBuilder implements ASTVisitor {
         currentloopcond=loopcond;
         currentloopend=loopend;
 
+        currentBlock.insts.add(new J(loopcond));
         currentBlock.succ.add(loopcond);
         loopcond.pred.add(currentBlock);
         currentBlock=loopcond;
         currentFunc.blocks.add(currentBlock);
+
         it.cond.accept(this);
         currentBlock.insts.add(new Branch("beqz",getReg(it.cond.operand),null,loopend));
         currentBlock.succ.add(loopend);
         loopend.pred.add(currentBlock);
+        currentBlock.insts.add(new J(loopbody));
         currentBlock.succ.add(loopbody);
         loopbody.pred.add(currentBlock);
-
         currentBlock=loopbody;
         currentFunc.blocks.add(currentBlock);
+
         it.body.accept(this);
         currentBlock.insts.add(new J(loopcond));
         currentBlock.succ.add(loopcond);
@@ -410,13 +418,14 @@ public class ASMBuilder implements ASTVisitor {
             Block _loopend= new Block(loopDepth,"newloopend"+Label),_loopcond= new Block(loopDepth,"newloopcond"+Label),_loopbody= new Block(loopDepth,"newloopbody"+Label);
             currentBlock.succ.add(_loopcond);
             _loopcond.pred.add(currentBlock);
-
+            currentBlock.insts.add(new J(_loopend));
 
             currentBlock=_loopcond;
             currentFunc.blocks.add(currentBlock);
             currentBlock.insts.add(new Branch("beqz",iter,null,_loopend));
             currentBlock.succ.add(_loopend);
             _loopend.pred.add(currentBlock);
+            currentBlock.insts.add(new J(_loopbody));
             currentBlock.succ.add(_loopbody);
             _loopbody.pred.add(currentBlock);
 
@@ -508,6 +517,7 @@ public class ASMBuilder implements ASTVisitor {
                     currentBlock.insts.add(new Branch("beqz", getReg(it.expr1.operand), null, setfalse));
                     currentBlock.succ.add(setfalse);
                     setfalse.pred.add(currentBlock);
+                    currentBlock.insts.add(new J(settrue));
                     currentBlock.succ.add(settrue);
                     settrue.pred.add(currentBlock);
                 }
@@ -534,6 +544,7 @@ public class ASMBuilder implements ASTVisitor {
                 currentBlock=setfalse;
                 currentFunc.blocks.add(currentBlock);
                 currentBlock.insts.add(new Li(tmp, new Imm(0),"li"));
+                currentBlock.insts.add(new J(end));
                 currentBlock.succ.add(end);
                 end.pred.add(currentBlock);
 
@@ -554,6 +565,7 @@ public class ASMBuilder implements ASTVisitor {
                 currentBlock.insts.add(new Branch("bnez", getReg(it.expr1.operand), null, settrue));
                 currentBlock.succ.add(settrue);
                 settrue.pred.add(currentBlock);
+                currentBlock.insts.add(new J(setfalse));
                 currentBlock.succ.add(setfalse);
                 setfalse.pred.add(currentBlock);
 
@@ -572,6 +584,7 @@ public class ASMBuilder implements ASTVisitor {
                 currentBlock=settrue;
                 currentFunc.blocks.add(currentBlock);
                 currentBlock.insts.add(new Li(tmp, new Imm(1),"li"));
+                currentBlock.insts.add(new J(end));
                 currentBlock.succ.add(end);
                 end.pred.add(currentBlock);
 
