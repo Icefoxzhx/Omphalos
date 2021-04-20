@@ -14,6 +14,7 @@ public class Block {
     public int loopDepth;
     public boolean terminated=false;
     public void removeTerminator(){
+        if(insts.isEmpty()) return;
         Block dest;
         if(insts.get(insts.size()-1) instanceof J){
             dest=((J) insts.get(insts.size()-1)).dest;

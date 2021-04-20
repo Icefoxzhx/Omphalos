@@ -418,7 +418,7 @@ public class ASMBuilder implements ASTVisitor {
             Block _loopend= new Block(loopDepth,"newloopend"+Label),_loopcond= new Block(loopDepth,"newloopcond"+Label),_loopbody= new Block(loopDepth,"newloopbody"+Label);
             currentBlock.succ.add(_loopcond);
             _loopcond.pred.add(currentBlock);
-            currentBlock.insts.add(new J(_loopend));
+            currentBlock.insts.add(new J(_loopcond));
 
             currentBlock=_loopcond;
             currentFunc.blocks.add(currentBlock);
