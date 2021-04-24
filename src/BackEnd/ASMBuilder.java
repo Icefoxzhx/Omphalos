@@ -650,7 +650,7 @@ public class ASMBuilder implements ASTVisitor {
             }
         }
         Register rs1=getReg(it.expr1.operand);
-        if(it.expr2.operand instanceof Imm){
+        if(it.expr2.operand instanceof Imm && ((Imm) it.expr2.operand).val<=2047 && ((Imm) it.expr2.operand).val>=-2048){
             switch(it.op) {
                 case "<<":
                     currentBlock.insts.add(new Calc("slli", tmp, rs1, it.expr2.operand));
