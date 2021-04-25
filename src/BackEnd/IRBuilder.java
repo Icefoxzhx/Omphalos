@@ -177,6 +177,7 @@ public class IRBuilder implements ASTVisitor {
 
         if(!currentBlock.terminated){
             Inst xx;
+
             if(currentFunc.name.equals("main")){
                 xx=new Return(currentBlock,new ConstInt(0));
             }else xx=new Return(currentBlock,null);

@@ -293,6 +293,7 @@ public class SemanticChecker implements ASTVisitor{
             FuncSymbol func = new FuncSymbol("length");
             func.returnType = new PrimitiveType("int");
             func.abs_name="__Om_builtin_str_length";
+            func.inClass=true;
             it.type = func;
             return;
         }
@@ -302,6 +303,7 @@ public class SemanticChecker implements ASTVisitor{
             func.abs_name="__Om_builtin_str_substring";
             func.paramList.add(new VarSymbol("left", new PrimitiveType("int")));
             func.paramList.add(new VarSymbol("right", new PrimitiveType("int")));
+            func.inClass=true;
             it.type = func;
             return;
         }
@@ -309,6 +311,7 @@ public class SemanticChecker implements ASTVisitor{
             FuncSymbol func = new FuncSymbol("parseInt");
             func.returnType = new PrimitiveType("int");
             func.abs_name="__Om_builtin_str_parseInt";
+            func.inClass=true;
             it.type = func;
             return;
         }
@@ -317,6 +320,7 @@ public class SemanticChecker implements ASTVisitor{
             func.returnType = new PrimitiveType("int");
             func.abs_name="__Om_builtin_str_ord";
             func.paramList.add(new VarSymbol("pos", new PrimitiveType("int")));
+            func.inClass=true;
             it.type = func;
             return;
         }
