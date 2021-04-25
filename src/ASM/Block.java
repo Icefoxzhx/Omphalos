@@ -12,7 +12,11 @@ public class Block {
     public ArrayList<Block> pred=new ArrayList<>();
     public ArrayList<Block> succ=new ArrayList<>();
     public int loopDepth;
-    public boolean terminated=false;
+
+    public Inst getTerminator(){
+        if(insts.isEmpty()) return null;
+        return insts.get(insts.size()-1);
+    }
     public void removeTerminator(){
         if(insts.isEmpty()) return;
         Block dest;

@@ -5,7 +5,6 @@ import ASM.Root;
 import ASM.operand.Register;
 import Util.symbol.FuncSymbol;
 
-import java.io.PrintStream;
 import java.util.HashSet;
 
 public class Call extends Inst{
@@ -19,7 +18,7 @@ public class Call extends Inst{
 	@Override
 	public HashSet<Register> getUse() {
 		HashSet<Register> res=new HashSet<>();
-		int sz=func.paramList.size()+(func.inClass?1:0);
+		int sz=func.paramList.size()+(func.inClass?1:0);;
 		for(int i=0;i<Integer.min(sz, 8);i++){
 			res.add(root.getPReg(10+i));
 		}
@@ -46,10 +45,4 @@ public class Call extends Inst{
 	public String toString() {
 		return "call "+func.abs_name;
 	}
-	/*
-	@Override
-	public void printASM(PrintStream prt) {
-		prt.println("\tcall "+func_name);
-	}
-	 */
 }

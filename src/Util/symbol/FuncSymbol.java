@@ -1,6 +1,6 @@
 package Util.symbol;
 
-import ASM.Function;
+import IR.Function;
 
 import java.util.ArrayList;
 

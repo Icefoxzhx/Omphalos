@@ -1,6 +1,6 @@
 package Util.symbol;
 
-import ASM.operand.Operand;
+import IR.operand.Operand;
 
 public class VarSymbol{
     public String name;

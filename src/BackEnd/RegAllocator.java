@@ -468,12 +468,11 @@ public class RegAllocator{
             if (block.insts.get(0) instanceof J) {
                 Block dest = ((J) block.insts.get(0)).dest;
                 block.succ.forEach(b->{
-                    b.pred.remove(block);
+                    b.pred.removeAll(Collections.singletonList(block));
                 });
                 block.pred.forEach(b->{
                     b.succ.remove(block);
                     b.succ.add(dest);
-                    dest.pred.remove(b);
                     dest.pred.add(b);
                 });
                 for (Block b : currentFunction.blocks) {
@@ -484,6 +483,19 @@ public class RegAllocator{
                             ((Branch) inst).dest = dest;
                     }
                 }
+                currentFunction.blocks.remove(i);
+                --i;
+                continue;
+            }if(block.pred.size()==1&&block.pred.get(0).getTerminator() instanceof J && ((J)block.pred.get(0).getTerminator()).dest==block){
+                Block b=block.pred.get(0);
+                b.removeTerminator();
+                b.insts.addAll(block.insts);
+                block.succ.forEach(succ->{
+                    succ.pred.remove(block);
+                    succ.pred.add(b);
+                    b.succ.remove(succ);
+                    b.succ.add(succ);
+                });
                 currentFunction.blocks.remove(i);
                 --i;
                 continue;

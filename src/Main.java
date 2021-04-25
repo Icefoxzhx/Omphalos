@@ -1,7 +1,6 @@
 import AST.ProgramNode;
 import FrontEnd.*;
 import BackEnd.*;
-import ASM.Root;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -44,12 +43,14 @@ public class Main{
             global.varMap.clear();
             new SemanticChecker(global).visit(ASTRoot);
             if(!codegen) return;
-            Root Root=new Root();
-            new ASMBuilder(Root).visit(ASTRoot);
-            new RegAllocator(Root).Run();
-            new ASMPrinter(Root).run();
+            IR.Root IRRoot=new IR.Root();
+            new IRBuilder(IRRoot).visit(ASTRoot);
+            ASM.Root ASMRoot=new ASM.Root();
+            new ASMBuilder(IRRoot,ASMRoot).run();
+            new RegAllocator(ASMRoot).Run();
+            new ASMPrinter(ASMRoot).run();
         } catch(Error er){
-            System.err.println(er.toString());
+            System.err.println(er);
             throw new RuntimeException();
         }
     }

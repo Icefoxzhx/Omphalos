@@ -1,8 +1,8 @@
 package FrontEnd;
 
-import ASM.Function;
+import IR.Function;
 import AST.*;
-import ASM.operand.Imm;
+import IR.operand.ConstInt;
 import Util.error.semanticError;
 import Util.symbol.*;
 
@@ -91,7 +91,7 @@ public class SemanticChecker implements ASTVisitor{
         currentClass=(ClassType) globalScope.typeMap.get(it.name);
         currentScope=new Scope(currentScope);
         for(int i=0;i<it.varList.size();++i) {
-            it.varList.get(i).var.operand = new Imm(i);
+            it.varList.get(i).var.operand = new ConstInt(i);
             it.varList.get(i).var.isClassMember=true;
         }
         currentClass.varMap.forEach((key,val)->currentScope.defineVariable(key,val,it.pos));
