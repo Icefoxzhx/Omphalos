@@ -188,7 +188,7 @@ public class IRBuilder implements ASTVisitor {
             if(!it.func.returnType.isVoid()){
                 Register tmp=new Register("tmp");
                 currentFunc.returnBlocks.forEach(b-> {
-                    b.insts.add(b.insts.size()-1,new Assign(b,tmp,((Return)b.insts.get(b.insts.size()-1)).val));
+                    if(((Return)b.insts.get(b.insts.size()-1)).val!=null) b.insts.add(b.insts.size()-1,new Assign(b,tmp,((Return)b.insts.get(b.insts.size()-1)).val));
                 });
                 currentBlock.addTerminator(new Return(currentBlock,tmp));
             }else currentBlock.addTerminator(new Return(currentBlock,null));
