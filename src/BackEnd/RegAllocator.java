@@ -442,7 +442,7 @@ public class RegAllocator{
     public void RemoveUselessBlock(){
         for (int i=0;i<currentFunction.blocks.size();++i){
             Block block=currentFunction.blocks.get(i);
-            if(block.pred.isEmpty()&&block!=currentFunction.beginBlock){
+            if(i!=0&&block.pred.isEmpty()){
                 block.succ.forEach(b->{
                     b.pred.remove(block);
                 });
@@ -465,7 +465,7 @@ public class RegAllocator{
                 --i;
                 continue;
             }
-            if (block.insts.get(0) instanceof J) {
+            if (i!=0&&block.insts.get(0) instanceof J) {
                 Block dest = ((J) block.insts.get(0)).dest;
                 block.succ.forEach(b->{
                     b.pred.removeAll(Collections.singletonList(block));
@@ -486,7 +486,7 @@ public class RegAllocator{
                 currentFunction.blocks.remove(i);
                 --i;
                 continue;
-            }if(block.pred.size()==1&&block.pred.get(0).getTerminator() instanceof J && ((J)block.pred.get(0).getTerminator()).dest==block){
+            }if(i!=0&&block.pred.size()==1&&block.pred.get(0).getTerminator() instanceof J && ((J)block.pred.get(0).getTerminator()).dest==block){
                 Block b=block.pred.get(0);
                 b.removeTerminator();
                 b.insts.addAll(block.insts);
