@@ -1,6 +1,7 @@
 import AST.ProgramNode;
 import FrontEnd.*;
 import BackEnd.*;
+import Optimizer.Optimizer;
 import Parser.MxLexer;
 import Parser.MxParser;
 import Util.MxErrorListener;
@@ -14,13 +15,14 @@ import java.io.InputStream;
 
 public class Main{
     public static void main(String[] args)throws Exception{
-        boolean codegen=true,optimize=false;
+        boolean codegen=true,optimize=false,debug=false;
         if(args.length>0){
             for(String arg:args){
                 switch(arg){
                     case "-semantic" -> codegen=false;
                     case "-codegen" -> codegen=true;
                     case "-O2" -> optimize=true;
+                    case "-debug" -> debug=true;
                 }
             }
         }
@@ -45,6 +47,8 @@ public class Main{
             if(!codegen) return;
             IR.Root IRRoot=new IR.Root();
             new IRBuilder(IRRoot).visit(ASTRoot);
+            if(optimize) new Optimizer(IRRoot).run();
+       //     if(debug) new IRPrinter(IRRoot).run();
             ASM.Root ASMRoot=new ASM.Root();
             new ASMBuilder(IRRoot,ASMRoot).run();
             new RegAllocator(ASMRoot).Run();

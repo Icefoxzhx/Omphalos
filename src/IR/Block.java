@@ -17,6 +17,11 @@ public class Block {
         if(insts.size()<2) return null;
         return insts.get(insts.size()-2);
     }
+
+    public Inst getTerminator(){
+        if(insts.isEmpty()) return null;
+        return insts.get(insts.size()-1);
+    }
     public void addTerminator(Inst xx){
         if(terminated) return;
         insts.add(xx);
@@ -32,7 +37,7 @@ public class Block {
         terminated=true;
     }
     public void removeTerminator(){
-        if(insts.isEmpty()) return;
+        if(!terminated||insts.isEmpty()) return;
         Inst xx=insts.get(insts.size()-1);
         if(xx instanceof J){
             succ.remove(((J) xx).dest);
@@ -49,5 +54,8 @@ public class Block {
     public Block(int loopDepth, String name){
         this.loopDepth=loopDepth;
         this.name=name;
+    }
+    public String toString(){
+        return name;
     }
 }

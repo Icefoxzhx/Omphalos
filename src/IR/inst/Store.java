@@ -32,6 +32,6 @@ public class Store extends Inst{
 
 	@Override
 	public String toString() {
-		return "sw "+rs.toString()+", 0("+addr.toString()+")";
+		return "sw "+rs.toString()+", "+addr.toString();
 	}
 }

@@ -26,6 +26,6 @@ public class J extends Inst{
 
     @Override
     public String toString() {
-        return null;
+        return "j "+dest.name;
     }
 }
