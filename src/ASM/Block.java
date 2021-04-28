@@ -33,4 +33,7 @@ public class Block {
         this.loopDepth=loopDepth;
         this.name="."+name;
     }
+    public String toString(){
+        return name;
+    }
 }

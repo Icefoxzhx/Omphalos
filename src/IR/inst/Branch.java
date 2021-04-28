@@ -31,6 +31,6 @@ public class Branch extends Inst{
 
     @Override
     public String toString() {
-        return "bnez "+val.toString()+", "+trueDest.name;
+        return "branch "+val.toString()+", "+trueDest.name+", "+falseDest.name;
     }
 }

@@ -170,6 +170,7 @@ public class IRBuilder implements ASTVisitor {
         });
 
         if(currentFunc.name.equals("main")){
+            root.mainFunc=currentFunc;
             MainInited=true;
             globals.forEach(x->x.accept(this));
         }
@@ -483,7 +484,7 @@ public class IRBuilder implements ASTVisitor {
             case "||":
                 ++Label;
                 if(it.trueBlock!=null){
-                    Block newBlock=new Block(loopDepth,"andandtmp"+Label);
+                    Block newBlock=new Block(loopDepth,"orortmp"+Label);
                     it.expr1.trueBlock=it.trueBlock;
                     it.expr1.falseBlock=newBlock;
                     it.expr2.trueBlock=it.trueBlock;
@@ -579,7 +580,7 @@ public class IRBuilder implements ASTVisitor {
                     case "<=" -> ((ConstInt) it.expr1.operand).val <= ((ConstInt) it.expr2.operand).val ? 1: 0;
                     case ">=" -> ((ConstInt) it.expr1.operand).val >= ((ConstInt) it.expr2.operand).val ? 1: 0;
                     case "==" -> ((ConstInt) it.expr1.operand).val == ((ConstInt) it.expr2.operand).val ? 1: 0;
-                    case "!=" -> ((ConstInt) it.expr1.operand).val >= ((ConstInt) it.expr2.operand).val ? 1: 0;
+                    case "!=" -> ((ConstInt) it.expr1.operand).val != ((ConstInt) it.expr2.operand).val ? 1: 0;
                     default -> 0;
                 };
                 it.operand=new ConstInt(res);

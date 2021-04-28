@@ -16,6 +16,9 @@ public class Function {
     public Function(String name){
         this.name=name;
     }
+    public String toString(){
+        return name;
+    }
 
 
 }
