@@ -5,7 +5,7 @@ import ASM.Root;
 import ASM.operand.Register;
 import Util.symbol.FuncSymbol;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Call extends Inst{
 	public Root root;
@@ -16,8 +16,8 @@ public class Call extends Inst{
 	}
 
 	@Override
-	public HashSet<Register> getUse() {
-		HashSet<Register> res=new HashSet<>();
+	public LinkedHashSet<Register> getUse() {
+		LinkedHashSet<Register> res=new LinkedHashSet<>();
 		int sz=func.paramList.size()+(func.inClass?1:0);;
 		for(int i=0;i<Integer.min(sz, 8);i++){
 			res.add(root.getPReg(10+i));
@@ -26,8 +26,8 @@ public class Call extends Inst{
 	}
 
 	@Override
-	public HashSet<Register> getDef() {
-		return new HashSet<>(root.getCallerSave());
+	public LinkedHashSet<Register> getDef() {
+		return new LinkedHashSet<>(root.getCallerSave());
 	}
 
 	@Override

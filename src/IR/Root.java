@@ -1,7 +1,7 @@
 package IR;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Root {
     public ArrayList<Function> func=new ArrayList<>();

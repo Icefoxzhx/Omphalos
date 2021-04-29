@@ -4,7 +4,7 @@ import ASM.Root;
 import ASM.operand.Register;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Ret extends Inst{
     public Root root;
@@ -13,13 +13,13 @@ public class Ret extends Inst{
         this.root=root;
     }
     @Override
-    public HashSet<Register> getUse() {
-        return new HashSet<>(Collections.singletonList(root.getPReg(1)));
+    public LinkedHashSet<Register> getUse() {
+        return new LinkedHashSet<>(Collections.singletonList(root.getPReg(1)));
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>();
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>();
     }
 
     @Override

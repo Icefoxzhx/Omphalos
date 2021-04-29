@@ -5,7 +5,7 @@ import IR.operand.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Store extends Inst{
 	public Operand rs,addr;

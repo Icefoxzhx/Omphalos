@@ -2,12 +2,12 @@ package Util.symbol;
 
 import ASM.operand.Register;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ClassType extends Type{
     public String name;
-    public HashMap<String,VarSymbol> varMap=new HashMap<>();
-    public HashMap<String,FuncSymbol> funcMap=new HashMap<>();
+    public LinkedHashMap<String,VarSymbol> varMap=new LinkedHashMap<>();
+    public LinkedHashMap<String,FuncSymbol> funcMap=new LinkedHashMap<>();
     public FuncSymbol constructor=null;
     public ClassType(String name){
         this.name=name;

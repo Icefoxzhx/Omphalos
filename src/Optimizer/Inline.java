@@ -7,22 +7,22 @@ import IR.inst.*;
 import IR.operand.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 public class Inline {
     public Root root;
-    public HashMap<Function, ArrayList<Function>> calleeFunc = new HashMap<>();
-    public HashMap<Function, ArrayList<Call>> callerInst = new HashMap<>();
-    public HashMap<Function, ArrayList<Function>> callerFunc = new HashMap<>();
+    public LinkedHashMap<Function, ArrayList<Function>> calleeFunc = new LinkedHashMap<>();
+    public LinkedHashMap<Function, ArrayList<Call>> callerInst = new LinkedHashMap<>();
+    public LinkedHashMap<Function, ArrayList<Function>> callerFunc = new LinkedHashMap<>();
     public ArrayList<Call> newcallerInst=new ArrayList<>();
     public ArrayList<Function> newcallerFunc=new ArrayList<>();
-    public HashSet<Function> canNotInline=new HashSet<>();
-    public HashSet<Function> visited=new HashSet<>();
+    public LinkedHashSet<Function> canNotInline=new LinkedHashSet<>();
+    public LinkedHashSet<Function> visited=new LinkedHashSet<>();
     public ArrayList<Function> stack=new ArrayList<>();
     public ArrayList<Function> canInline=new ArrayList<>();
-    public HashMap<Block,Block> inlineBlock;
-    public HashMap<Register,Register> inlineReg;
+    public LinkedHashMap<Block,Block> inlineBlock;
+    public LinkedHashMap<Register,Register> inlineReg;
 
     public Inline(Root root){
         this.root=root;
@@ -35,7 +35,7 @@ public class Inline {
         });
     }
     public void edgeCollect(){
-        calleeFunc =new HashMap<>();
+        calleeFunc =new LinkedHashMap<>();
         root.func.forEach(x->{
             calleeFunc.put(x,new ArrayList<>());
             callerInst.put(x,new ArrayList<>());
@@ -83,8 +83,8 @@ public class Inline {
         Function callee=call.func.func;
         int totalInstNum=callee.blocks.stream().mapToInt(b->b.insts.size()).sum();
         if(callee.blocks.size()>50 || totalInstNum>500) return;
-        inlineBlock=new HashMap<>();
-        inlineReg=new HashMap<>();
+        inlineBlock=new LinkedHashMap<>();
+        inlineReg=new LinkedHashMap<>();
         callee.blocks.forEach(b->{
             Block nb=new Block(b.loopDepth,prefix+b.name);
             nb.terminated=b.terminated;

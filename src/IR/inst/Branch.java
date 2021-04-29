@@ -4,7 +4,7 @@ import IR.Block;
 import IR.operand.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Branch extends Inst{
     public Operand val;

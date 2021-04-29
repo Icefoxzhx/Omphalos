@@ -4,7 +4,7 @@ import ASM.Block;
 import ASM.operand.Register;
 
 import java.io.PrintStream;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class J extends Inst{
     public Block dest;
@@ -18,13 +18,13 @@ public class J extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        return new HashSet<>();
+    public LinkedHashSet<Register> getUse() {
+        return new LinkedHashSet<>();
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>();
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>();
     }
 
     @Override

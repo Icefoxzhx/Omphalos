@@ -4,7 +4,7 @@ import ASM.operand.*;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Mv extends Inst{
     public Register rd,rs;
@@ -14,13 +14,13 @@ public class Mv extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        return new HashSet<>(Collections.singletonList(rs));
+    public LinkedHashSet<Register> getUse() {
+        return new LinkedHashSet<>(Collections.singletonList(rs));
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>(Collections.singletonList(rd));
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>(Collections.singletonList(rd));
     }
 
     @Override

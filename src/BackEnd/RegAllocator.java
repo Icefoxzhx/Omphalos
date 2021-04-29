@@ -16,51 +16,53 @@ public class RegAllocator{
         this.root=root;
     }
 
-    public HashMap<Block, HashSet<Register>> buses=new HashMap<>(),bdefs=new HashMap<>(),blivein=new HashMap<>(),bliveout=new HashMap<>();
+    public LinkedHashMap<Block, LinkedHashSet<Register>> buses=new LinkedHashMap<>(),bdefs=new LinkedHashMap<>(),blivein=new LinkedHashMap<>(),bliveout=new LinkedHashMap<>();
 
     public void LivenessAnalysis(){
-        buses=new HashMap<>();
-        bdefs=new HashMap<>();
-        blivein=new HashMap<>();
-        bliveout=new HashMap<>();
-        currentFunction.blocks.forEach(b->{
-            HashSet<Register> uses=new HashSet<>(),defs=new HashSet<>();
-            b.insts.forEach(x->{
-                HashSet<Register> t=x.getUse();
+        buses=new LinkedHashMap<>();
+        bdefs=new LinkedHashMap<>();
+        blivein=new LinkedHashMap<>();
+        bliveout=new LinkedHashMap<>();
+        for (Block block : currentFunction.blocks) {
+            LinkedHashSet<Register> uses = new LinkedHashSet<>(), defs = new LinkedHashSet<>();
+            for (Inst x : block.insts) {
+                LinkedHashSet<Register> t = x.getUse();
                 t.removeAll(defs);
                 uses.addAll(t);
                 defs.addAll(x.getDef());
-            });
-            buses.put(b,uses);
-            bdefs.put(b,defs);
-            blivein.put(b,new HashSet<>());
-            bliveout.put(b,new HashSet<>());
-        });
-        HashSet<Block> inq=new HashSet<>();
+            }
+            buses.put(block, uses);
+            bdefs.put(block, defs);
+            blivein.put(block, new LinkedHashSet<>());
+            bliveout.put(block, new LinkedHashSet<>());
+        }
+        LinkedHashSet<Block> inq=new LinkedHashSet<>();
         Queue<Block> q=new LinkedList<>();
-        currentFunction.blocks.forEach(b->{
-            if(b.succ.isEmpty()){
+        for (Block b : currentFunction.blocks) {
+            if (b.succ.isEmpty()) {
                 inq.add(b);
                 q.add(b);
             }
-        });
+        }
         while(!q.isEmpty()){
             Block x=q.poll();
             inq.remove(x);
-            HashSet<Register> liveout=new HashSet<>();
-            x.succ.forEach(a->liveout.addAll(blivein.get(a)));
+            LinkedHashSet<Register> liveout=new LinkedHashSet<>();
+            for (Block block : x.succ) {
+                liveout.addAll(blivein.get(block));
+            }
             bliveout.replace(x,liveout);
-            HashSet<Register> livein=new HashSet<>(liveout);
+            LinkedHashSet<Register> livein=new LinkedHashSet<>(liveout);
             livein.removeAll(bdefs.get(x));
             livein.addAll(buses.get(x));
             if(!livein.equals(blivein.get(x))){
                 blivein.replace(x,livein);
-                x.pred.forEach(a->{
-                    if(!inq.contains(a)){
+                for (Block a : x.pred) {
+                    if (!inq.contains(a)) {
                         inq.add(a);
                         q.add(a);
                     }
-                });
+                }
             }
         }
     }
@@ -85,51 +87,51 @@ public class RegAllocator{
     }
 
     public int spOffset=0;
-    public HashMap<Register,HashSet<Mv>> moveList=new HashMap<>();
-    public HashMap<Register,HashSet<Register>> adjList=new HashMap<>();
-    public HashMap<Register,Double>weight=new HashMap<>();
-    public HashMap<Register,Integer>degree=new HashMap<>();
-    public HashMap<Register,Register> alias=new HashMap<>();
-    public HashMap<Register,Integer> offset=new HashMap<>();
-    public HashSet<edge> adjSet=new HashSet<>();
+    public LinkedHashMap<Register,LinkedHashSet<Mv>> moveList=new LinkedHashMap<>();
+    public LinkedHashMap<Register,LinkedHashSet<Register>> adjList=new LinkedHashMap<>();
+    public LinkedHashMap<Register,Double>weight=new LinkedHashMap<>();
+    public LinkedHashMap<Register,Integer>degree=new LinkedHashMap<>();
+    public LinkedHashMap<Register,Register> alias=new LinkedHashMap<>();
+    public LinkedHashMap<Register,Integer> offset=new LinkedHashMap<>();
+    public LinkedHashSet<edge> adjSet=new LinkedHashSet<>();
 
     public int K;
-    public HashSet<Mv> workListMoves,activeMoves,coalescedMoves,constrainedMoves,frozenMoves;
-    public HashSet<Register> preColored,initial,simplifyWorkList,freezeWorkList,spillWorkList,spilledNodes, coalescedNodes,coloredNodes,canNotSpillNodes;
+    public LinkedHashSet<Mv> workListMoves,activeMoves,coalescedMoves,constrainedMoves,frozenMoves;
+    public LinkedHashSet<Register> preColored,initial,simplifyWorkList,freezeWorkList,spillWorkList,spilledNodes, coalescedNodes,coloredNodes,canNotSpillNodes;
     public Stack<Register> selectStack;
     public void Init(){
         K=root.getColors().size();
-        workListMoves=new HashSet<>();
-        activeMoves=new HashSet<>();
-        coalescedMoves=new HashSet<>();
-        constrainedMoves=new HashSet<>();
-        frozenMoves=new HashSet<>();
-        preColored=new HashSet<>(root.getPRegs());
-        initial=new HashSet<>();
-        simplifyWorkList=new HashSet<>();
-        freezeWorkList=new HashSet<>();
-        spillWorkList=new HashSet<>();
-        spilledNodes=new HashSet<>();
-        coalescedNodes =new HashSet<>();
-        coloredNodes=new HashSet<>();
-        canNotSpillNodes=new HashSet<>();
-        moveList=new HashMap<>();
-        adjList=new HashMap<>();
-        weight=new HashMap<>();
-        degree=new HashMap<>();
-        alias=new HashMap<>();
-        offset=new HashMap<>();
-        adjSet=new HashSet<>();
+        workListMoves=new LinkedHashSet<>();
+        activeMoves=new LinkedHashSet<>();
+        coalescedMoves=new LinkedHashSet<>();
+        constrainedMoves=new LinkedHashSet<>();
+        frozenMoves=new LinkedHashSet<>();
+        preColored=new LinkedHashSet<>(root.getPRegs());
+        initial=new LinkedHashSet<>();
+        simplifyWorkList=new LinkedHashSet<>();
+        freezeWorkList=new LinkedHashSet<>();
+        spillWorkList=new LinkedHashSet<>();
+        spilledNodes=new LinkedHashSet<>();
+        coalescedNodes =new LinkedHashSet<>();
+        coloredNodes=new LinkedHashSet<>();
+        canNotSpillNodes=new LinkedHashSet<>();
+        moveList=new LinkedHashMap<>();
+        adjList=new LinkedHashMap<>();
+        weight=new LinkedHashMap<>();
+        degree=new LinkedHashMap<>();
+        alias=new LinkedHashMap<>();
+        offset=new LinkedHashMap<>();
+        adjSet=new LinkedHashSet<>();
         selectStack=new Stack<>();
-        currentFunction.blocks.forEach(block->{
-            block.insts.forEach(inst -> {
+        for (Block block1 : currentFunction.blocks) {
+            for (Inst inst : block1.insts) {
                 initial.addAll(inst.getUse());
                 initial.addAll(inst.getDef());
-            });
-        });
+            }
+        }
         for(Register x:initial){
-            moveList.put(x,new HashSet<>());
-            adjList.put(x,new HashSet<>());
+            moveList.put(x,new LinkedHashSet<>());
+            adjList.put(x,new LinkedHashSet<>());
             weight.put(x,0.0);
             degree.put(x,0);
             alias.put(x,x);
@@ -140,18 +142,18 @@ public class RegAllocator{
             degree.put(x,20010122);
             x.color=(PReg) x;
         }
-        currentFunction.blocks.forEach(block->{
-            block.insts.forEach(inst->{
-                inst.getUse().forEach(x->{
-                   double t=weight.get(x)+Math.pow(10.0,block.loopDepth);
-                   weight.replace(x,t);
-                });
-                inst.getDef().forEach(x->{
-                    double t=weight.get(x)+Math.pow(10.0,block.loopDepth);
-                    weight.replace(x,t);
-                });
-            });
-        });
+        for (Block block : currentFunction.blocks) {
+            for (Inst inst : block.insts) {
+                for (Register register : inst.getUse()) {
+                    double t = weight.get(register) + Math.pow(10.0, block.loopDepth);
+                    weight.replace(register, t);
+                }
+                for (Register x : inst.getDef()) {
+                    double t = weight.get(x) + Math.pow(10.0, block.loopDepth);
+                    weight.replace(x, t);
+                }
+            }
+        }
     }
 
     public void AddEdge(Register x, Register y){
@@ -171,28 +173,34 @@ public class RegAllocator{
         }
     }
     public void Build(){
-        currentFunction.blocks.forEach(b->{
-            HashSet<Register> live=new HashSet<>(bliveout.get(b));
-            for(int i=b.insts.size()-1;i>=0;--i){
-                Inst inst=b.insts.get(i);
-                if(inst instanceof Mv){
+        for (Block b : currentFunction.blocks) {
+            LinkedHashSet<Register> live = new LinkedHashSet<>(bliveout.get(b));
+            for (int i = b.insts.size() - 1; i >= 0; --i) {
+                Inst inst = b.insts.get(i);
+                if (inst instanceof Mv) {
                     live.removeAll(inst.getUse());
-                    HashSet<Register> t=inst.getDef();
+                    LinkedHashSet<Register> t = inst.getDef();
                     t.addAll(inst.getUse());
-                    t.forEach(x->moveList.get(x).add((Mv)inst));
+                    for (Register x : t) {
+                        moveList.get(x).add((Mv) inst);
+                    }
                     workListMoves.add((Mv) inst);
                 }
-                if(inst instanceof Sw) AddEdge(((Sw) inst).rt, ((Sw) inst).rd);
+                if (inst instanceof Sw) AddEdge(((Sw) inst).rt, ((Sw) inst).rd);
                 live.addAll(inst.getDef());
-                inst.getDef().forEach(a->live.forEach(c-> AddEdge(a,c)));
+                for (Register a : inst.getDef()) {
+                    for (Register c : live) {
+                        AddEdge(a, c);
+                    }
+                }
                 live.removeAll(inst.getDef());
                 live.addAll(inst.getUse());
             }
-        });
+        }
     }
 
-    public HashSet<Mv> NodeMoves(Register x){
-        HashSet<Mv> res=new HashSet<>(activeMoves);
+    public LinkedHashSet<Mv> NodeMoves(Register x){
+        LinkedHashSet<Mv> res=new LinkedHashSet<>(activeMoves);
         res.addAll(workListMoves);
         res.retainAll(moveList.get(x));
         return res;
@@ -200,26 +208,28 @@ public class RegAllocator{
     public boolean MoveRelated(Register x){
         return !NodeMoves(x).isEmpty();
     }
-    public HashSet<Register> Adjacent(Register x){
-        HashSet<Register> res=new HashSet<>(adjList.get(x));
-        HashSet<Register> tmp=new HashSet<>(selectStack);
+    public LinkedHashSet<Register> Adjacent(Register x){
+        LinkedHashSet<Register> res=new LinkedHashSet<>(adjList.get(x));
+        LinkedHashSet<Register> tmp=new LinkedHashSet<>(selectStack);
         tmp.addAll(coalescedNodes);
         res.removeAll(tmp);
         return res;
     }
-    public void EnableMoves(HashSet<Register> nodes){
-        nodes.forEach(n-> NodeMoves(n).forEach(m->{
-            if(activeMoves.contains(m)){
-                activeMoves.remove(m);
-                workListMoves.add(m);
+    public void EnableMoves(LinkedHashSet<Register> nodes){
+        for (Register n : nodes) {
+            for (Mv m : NodeMoves(n)) {
+                if (activeMoves.contains(m)) {
+                    activeMoves.remove(m);
+                    workListMoves.add(m);
+                }
             }
-        }));
+        }
     }
     public void DecrementDegree(Register x){
         int d=degree.get(x);
         degree.replace(x,d-1);
         if(d==K){
-            HashSet<Register> t = Adjacent(x);
+            LinkedHashSet<Register> t = Adjacent(x);
             t.add(x);
             EnableMoves(t);
             spillWorkList.remove(x);
@@ -259,42 +269,44 @@ public class RegAllocator{
         coalescedNodes.add(y);
         alias.put(y,x);
         moveList.get(x).addAll(moveList.get(y));
-        EnableMoves(new HashSet<>(Collections.singletonList(y)));
-        Adjacent(y).forEach(t->{
-            AddEdge(t,x);
+        EnableMoves(new LinkedHashSet<>(Collections.singletonList(y)));
+        for (Register t : Adjacent(y)) {
+            AddEdge(t, x);
             DecrementDegree(t);
-        });
+        }
         if(degree.get(x)>=K&&freezeWorkList.contains(x)){
             freezeWorkList.remove(x);
             spillWorkList.add(x);
         }
     }
     public void FreezeMoves(Register x){
-        NodeMoves(x).forEach(inst->{
+        for (Mv inst : NodeMoves(x)) {
             Register u = inst.rd, v = inst.rs, y;
-            if(GetAlias(x)== GetAlias(v)) y= GetAlias(u);
-            else y= GetAlias(v);
+            if (GetAlias(x) == GetAlias(v)) y = GetAlias(u);
+            else y = GetAlias(v);
             activeMoves.remove(inst);
             frozenMoves.add(inst);
-            if(NodeMoves(y).isEmpty()&&degree.get(y)<K){
+            if (NodeMoves(y).isEmpty() && degree.get(y) < K) {
                 freezeWorkList.remove(y);
                 simplifyWorkList.add(y);
             }
-        });
+        }
     }
     public void MakeWorkList(){
-        initial.forEach(x->{
-            if(degree.get(x)>=K) spillWorkList.add(x);
+        for (Register x : initial) {
+            if (degree.get(x) >= K) spillWorkList.add(x);
             else if (MoveRelated(x)) freezeWorkList.add(x);
             else simplifyWorkList.add(x);
-        });
+        }
     }
 
     public void Simplify(){
         Register x=simplifyWorkList.iterator().next();
         simplifyWorkList.remove(x);
         selectStack.push(x);
-        Adjacent(x).forEach(this::DecrementDegree);
+        for (Register register : Adjacent(x)) {
+            DecrementDegree(register);
+        }
     }
 
     public void Coalesce(){
@@ -347,11 +359,11 @@ public class RegAllocator{
         while(!selectStack.isEmpty()){
             Register x=selectStack.pop();
             ArrayList<PReg> okColors = new ArrayList<>(root.getColors());
-            HashSet<Register> colored = new HashSet<>(preColored);
+            LinkedHashSet<Register> colored = new LinkedHashSet<>(preColored);
             colored.addAll(coloredNodes);
-            adjList.get(x).forEach(y->{
-                if(colored.contains(GetAlias(y))) okColors.remove(GetAlias(y).color);
-            });
+            for (Register y : adjList.get(x)) {
+                if (colored.contains(GetAlias(y))) okColors.remove(GetAlias(y).color);
+            }
             if(okColors.isEmpty()) spilledNodes.add(x);
             else{
                 coloredNodes.add(x);
@@ -364,17 +376,18 @@ public class RegAllocator{
     }
 
     public void RewriteProgram(){
-        spilledNodes.forEach(x->{
-            offset.put(x,spOffset);
-            spOffset+=4;
-        });
+        for (Register spilledNode : spilledNodes) {
+            offset.put(spilledNode, spOffset);
+            spOffset += 4;
+        }
         for(Block block : currentFunction.blocks){
+            //System.err.println(block);
             for(int i=0;i<block.insts.size();++i){
                 Inst inst=block.insts.get(i);
                 if(inst instanceof Mv && spilledNodes.contains(((Mv) inst).rd) && spilledNodes.contains(((Mv) inst).rs)){
                     VReg tmp=new VReg("tmp");
                     block.insts.set(i,new Load(tmp,root.getPReg(2),new Imm(offset.get(((Mv)inst).rs))));
-                    block.insts.set(i+1,new Store(tmp,root.getPReg(2),new Imm(offset.get(((Mv)inst).rd))));
+                    block.insts.add(i+1,new Store(tmp,root.getPReg(2),new Imm(offset.get(((Mv)inst).rd))));
                     ++i;
                     continue;
                 }
@@ -437,15 +450,15 @@ public class RegAllocator{
                 dest=((J) block.insts.get(block.insts.size()-1)).dest;
             }else continue;
             if(dest==currentFunction.blocks.get(i+1)) block.insts.remove(block.insts.size()-1);
-        };
+        }
     }
     public void RemoveUselessBlock(){
         for (int i=0;i<currentFunction.blocks.size();++i){
             Block block=currentFunction.blocks.get(i);
             if(i!=0&&block.pred.isEmpty()){
-                block.succ.forEach(b->{
+                for (Block b : block.succ) {
                     b.pred.remove(block);
-                });
+                }
                 currentFunction.blocks.remove(i);
                 --i;
                 continue;
@@ -467,14 +480,14 @@ public class RegAllocator{
             }
             if (i!=0&&block.insts.get(0) instanceof J) {
                 Block dest = ((J) block.insts.get(0)).dest;
-                block.succ.forEach(b->{
-                    b.pred.removeAll(Collections.singletonList(block));
-                });
-                block.pred.forEach(b->{
-                    b.succ.remove(block);
-                    b.succ.add(dest);
-                    dest.pred.add(b);
-                });
+                for (Block b1 : block.succ) {
+                    b1.pred.removeAll(Collections.singletonList(block));
+                }
+                for (Block b1 : block.pred) {
+                    b1.succ.remove(block);
+                    b1.succ.add(dest);
+                    dest.pred.add(b1);
+                }
                 for (Block b : currentFunction.blocks) {
                     for (Inst inst : b.insts) {
                         if (inst instanceof J && ((J) inst).dest == block)
@@ -490,19 +503,18 @@ public class RegAllocator{
                 Block b=block.pred.get(0);
                 b.removeTerminator();
                 b.insts.addAll(block.insts);
-                block.succ.forEach(succ->{
+                for (Block succ : block.succ) {
                     succ.pred.remove(block);
                     succ.pred.add(b);
                     b.succ.remove(succ);
                     b.succ.add(succ);
-                });
+                }
                 currentFunction.blocks.remove(i);
                 --i;
-                continue;
             }
         }
     }
-    public void RunFunc(Function func){
+    public void RunFunc(){
         Init();
         LivenessAnalysis();
         Build();
@@ -516,7 +528,7 @@ public class RegAllocator{
         AssignColors();
         if(!spilledNodes.isEmpty()){
             RewriteProgram();
-            RunFunc(func);
+            RunFunc();
         }else{
             AddSp();
             RemoveDeadMv();
@@ -527,12 +539,10 @@ public class RegAllocator{
     }
 
     public void Run(){
-        root.func.forEach(func->{
-            spOffset=0;
-            currentFunction=func;
-            //RemoveUselessJ();
-            //RemoveUselessBlock();
-            RunFunc(func);
-        });
+        for (Function func : root.func) {
+            spOffset = 0;
+            currentFunction = func;
+            RunFunc();
+        }
     }
 }

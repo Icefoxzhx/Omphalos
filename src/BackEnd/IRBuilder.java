@@ -7,7 +7,7 @@ import IR.operand.*;
 import Util.symbol.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class IRBuilder implements ASTVisitor {
     public Type currentReturnType;
@@ -20,7 +20,7 @@ public class IRBuilder implements ASTVisitor {
     private Block currentBlock;
     private Register thisptr;
     private IR.Root root;
-    private HashMap<String, FuncSymbol> funcMap=new HashMap<>();
+    private LinkedHashMap<String, FuncSymbol> funcMap=new LinkedHashMap<>();
     public IRBuilder(IR.Root root){
         this.root = root;
         {

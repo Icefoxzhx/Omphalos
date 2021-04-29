@@ -4,7 +4,7 @@ import ASM.operand.*;
 
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Store extends Inst{
 	public Register rs,addr;
@@ -16,13 +16,13 @@ public class Store extends Inst{
 	}
 
 	@Override
-	public HashSet<Register> getUse() {
-		return new HashSet<>(Arrays.asList(rs,addr));
+	public LinkedHashSet<Register> getUse() {
+		return new LinkedHashSet<>(Arrays.asList(rs,addr));
 	}
 
 	@Override
-	public HashSet<Register> getDef() {
-		return new HashSet<>();
+	public LinkedHashSet<Register> getDef() {
+		return new LinkedHashSet<>();
 	}
 
 	@Override

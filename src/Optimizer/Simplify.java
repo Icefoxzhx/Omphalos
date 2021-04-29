@@ -9,12 +9,12 @@ import IR.inst.J;
 import IR.operand.Register;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Simplify {
     public Root root;
     public Function currentFunc=null;
-    public HashSet<Register> regUse;
+    public LinkedHashSet<Register> regUse;
     public Simplify(Root root){
         this.root=root;
     }
@@ -27,7 +27,7 @@ public class Simplify {
     }
 
     public void regUseCollect(){
-        regUse=new HashSet<>();
+        regUse=new LinkedHashSet<>();
         currentFunc.blocks.forEach(block->block.insts.forEach(inst->
                 inst.getUse().forEach(x->{
                     if(x instanceof Register) regUse.add((Register) x);

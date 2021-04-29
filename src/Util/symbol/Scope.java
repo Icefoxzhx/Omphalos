@@ -3,12 +3,12 @@ package Util.symbol;
 import AST.TypeNode;
 import Util.error.semanticError;
 import Util.position;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Scope{
-    public HashMap<String, VarSymbol>varMap=new HashMap<>();
-    public HashMap<String, FuncSymbol>funcMap=new HashMap<>();
-    public HashMap<String, Type> typeMap=new HashMap<>();
+    public LinkedHashMap<String, VarSymbol>varMap=new LinkedHashMap<>();
+    public LinkedHashMap<String, FuncSymbol>funcMap=new LinkedHashMap<>();
+    public LinkedHashMap<String, Type> typeMap=new LinkedHashMap<>();
     public Scope parentScope;
 
     public Scope(Scope parentScope){

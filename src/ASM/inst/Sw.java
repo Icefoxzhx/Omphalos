@@ -6,7 +6,7 @@ import ASM.operand.Symbol;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Sw extends Inst{
     public Register rd,rt;
@@ -18,13 +18,13 @@ public class Sw extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        return new HashSet<>(Collections.singletonList(rd));
+    public LinkedHashSet<Register> getUse() {
+        return new LinkedHashSet<>(Collections.singletonList(rd));
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>(Collections.singletonList(rt));
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>(Collections.singletonList(rt));
     }
 
     @Override

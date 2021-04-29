@@ -3,12 +3,12 @@ package ASM.inst;
 import ASM.operand.Register;
 
 import java.io.PrintStream;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public abstract class Inst {
 	//public abstract void printASM(PrintStream prt);
-	public abstract HashSet<Register> getUse();
-	public abstract HashSet<Register> getDef();
+	public abstract LinkedHashSet<Register> getUse();
+	public abstract LinkedHashSet<Register> getDef();
 	public abstract void replaceUse(Register x, Register y);
 	public abstract void replaceDef(Register x, Register y);
 	public abstract String toString();

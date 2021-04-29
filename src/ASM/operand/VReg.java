@@ -7,6 +7,6 @@ public class VReg extends Register{
     }
     @Override
     public String toString() {
-        return color.toString();
+        return color==null? name : color.toString();
     }
 }

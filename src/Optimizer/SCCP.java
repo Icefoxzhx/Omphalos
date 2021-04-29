@@ -7,22 +7,22 @@ import IR.inst.*;
 import IR.operand.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 public class SCCP {
     public Root root;
     public Function currentFunc;
-    public HashSet<Block> visited;
+    public LinkedHashSet<Block> visited;
     public boolean flag;
-    public HashMap<Register, ArrayList<Inst>> regUse;
+    public LinkedHashMap<Register, ArrayList<Inst>> regUse;
 
     public SCCP(Root root){
         this.root=root;
     }
 
     public void regUseCollect(){
-        regUse=new HashMap<>();
+        regUse=new LinkedHashMap<>();
         currentFunc.blocks.forEach(block->block.insts.forEach(inst->{
             inst.getUse().forEach(x->{
                 if(x instanceof Register){
@@ -114,7 +114,7 @@ public class SCCP {
         while(flag){
             flag=false;
             regUseCollect();
-            visited=new HashSet<>();
+            visited=new LinkedHashSet<>();
             doBlock(func.beginBlock);
         }
     }

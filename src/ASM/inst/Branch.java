@@ -5,7 +5,7 @@ import ASM.operand.*;
 
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Branch extends Inst{
     public String op;
@@ -20,16 +20,16 @@ public class Branch extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        HashSet<Register> res=new HashSet<>();
+    public LinkedHashSet<Register> getUse() {
+        LinkedHashSet<Register> res=new LinkedHashSet<>();
         res.add(rs1);
         if(rs2!=null) res.add(rs2);
         return res;
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>();
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>();
     }
 
     @Override

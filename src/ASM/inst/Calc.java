@@ -4,7 +4,7 @@ import ASM.operand.*;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Calc extends Inst{
     public Register rd,rs1;
@@ -18,16 +18,16 @@ public class Calc extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        HashSet<Register> res=new HashSet<>();
+    public LinkedHashSet<Register> getUse() {
+        LinkedHashSet<Register> res=new LinkedHashSet<>();
         res.add(rs1);
         if(rs2 instanceof Register) res.add((Register) rs2);
         return res;
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>(Collections.singletonList(rd));
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>(Collections.singletonList(rd));
     }
 
     @Override

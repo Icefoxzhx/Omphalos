@@ -10,8 +10,8 @@ import IR.inst.Return;
 import IR.operand.ConstInt;
 import IR.operand.ConstStr;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 import static java.lang.Math.abs;
 
@@ -21,9 +21,9 @@ public class ASMBuilder {
 
     public Function currentFunc=null;
     public Block currentBlock=null;
-    public HashMap<IR.operand.Operand, Register> regMap=new HashMap<>();
-    public HashMap<IR.Block, Block> blockMap=new HashMap<>();
-    public HashMap<IR.Function, Function> funcMap=new HashMap<>();
+    public LinkedHashMap<IR.operand.Operand, Register> regMap=new LinkedHashMap<>();
+    public LinkedHashMap<IR.Block, Block> blockMap=new LinkedHashMap<>();
+    public LinkedHashMap<IR.Function, Function> funcMap=new LinkedHashMap<>();
 
     public ASMBuilder(IR.Root IRRoot,ASM.Root ASMRoot){
         this.IRRoot=IRRoot;
@@ -255,8 +255,8 @@ public class ASMBuilder {
     }
 
     public void doFunc(IR.Function func){
-        regMap=new HashMap<>();
-        blockMap=new HashMap<>();
+        regMap=new LinkedHashMap<>();
+        blockMap=new LinkedHashMap<>();
         currentFunc=getFunction(func);
         currentFunc.beginBlock=getBlock(func.beginBlock);
         currentBlock=currentFunc.beginBlock;
@@ -286,7 +286,7 @@ public class ASMBuilder {
         final boolean[] flag = {true};
         while(flag[0]){
             flag[0] =false;
-            HashSet<Register> used=new HashSet<>();
+            LinkedHashSet<Register> used=new LinkedHashSet<>();
             used.add(ASMRoot.getPReg(10));
             currentFunc.blocks.forEach(b->b.insts.forEach(x->used.addAll(x.getUse())));
             currentFunc.blocks.forEach(b->{

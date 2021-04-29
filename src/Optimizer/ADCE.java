@@ -11,8 +11,8 @@ import java.util.*;
 public class ADCE {
     public Root root;
 
-    public HashMap<Register, ArrayList<Inst> > regDef;
-    public HashSet<Inst> liveInst;
+    public LinkedHashMap<Register, ArrayList<Inst> > regDef;
+    public LinkedHashSet<Inst> liveInst;
     public Queue<Inst>q;
 
     public ADCE(Root root){
@@ -20,7 +20,7 @@ public class ADCE {
     }
 
     public void regDefCollect(Function func){
-        regDef=new HashMap<>();
+        regDef=new LinkedHashMap<>();
         func.blocks.forEach(block->block.insts.forEach(inst->{
             if(inst.reg!=null){
                 if(!regDef.containsKey(inst.reg)) regDef.put(inst.reg, new ArrayList<>());
@@ -30,7 +30,7 @@ public class ADCE {
     }
 
     public void doFunc(Function func){
-        liveInst=new HashSet<>();
+        liveInst=new LinkedHashSet<>();
         q=new LinkedList<>();
         regDefCollect(func);
         func.blocks.forEach(block -> block.insts.forEach(inst->{

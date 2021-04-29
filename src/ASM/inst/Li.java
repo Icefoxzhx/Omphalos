@@ -4,7 +4,7 @@ import ASM.operand.*;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Li extends Inst{
     public String op;
@@ -17,13 +17,13 @@ public class Li extends Inst{
     }
 
     @Override
-    public HashSet<Register> getUse() {
-        return new HashSet<>();
+    public LinkedHashSet<Register> getUse() {
+        return new LinkedHashSet<>();
     }
 
     @Override
-    public HashSet<Register> getDef() {
-        return new HashSet<>(Collections.singletonList(rd));
+    public LinkedHashSet<Register> getDef() {
+        return new LinkedHashSet<>(Collections.singletonList(rd));
     }
 
     @Override

@@ -5,7 +5,7 @@ import IR.operand.Operand;
 import IR.operand.Register;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class J extends Inst{
     public Block dest;
