@@ -41,6 +41,7 @@ public class PhiEliminater {
                     tmp.succ.add(b);
                     b.pred.set(i,tmp);
                     b.UpdatePhi(x,tmp);
+                    tmp.pred.add(x);
                     for(int j=0;j<x.succ.size();++j){
                         if(x.succ.get(j)==b) x.succ.set(j,tmp);
                     }

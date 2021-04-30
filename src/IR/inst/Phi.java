@@ -36,6 +36,15 @@ public class Phi extends Inst{
         }
     }
 
+    public void replaceUse(Operand x, Operand y, Block b) {
+        for(int i=0;i<vals.size();++i){
+            if(vals.get(i)==x){
+                vals.set(i,y);
+                blocks.set(i,b);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder res=new StringBuilder(reg.toString()+" = phi (");

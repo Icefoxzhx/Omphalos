@@ -192,7 +192,7 @@ public class IRBuilder implements ASTVisitor {
         if(currentFunc.returnBlocks.size()>1){
             currentFunc.endBlock=currentBlock=new Block(loopDepth,"Returnof" + currentFunc.name);
             if(!it.func.returnType.isVoid()){
-                Register tmp=new Register("tmp");
+                Register tmp=new Register("return value");
                 Phi phi=new Phi(currentBlock,tmp);
                 currentFunc.returnBlocks.forEach(b->phi.add(b,((Return)b.getTerminator()).val));
                 currentBlock.insts.add(phi);
@@ -714,13 +714,13 @@ public class IRBuilder implements ASTVisitor {
                 it.operand = it.expr.operand;
                 break;
             case "-":
-                currentBlock.insts.add(new Calc(currentBlock,"neg", tmp, rs,null));
+                currentBlock.insts.add(new Calc(currentBlock,"sub", tmp, new ConstInt(0),rs));
                 break;
             case "~":
-                currentBlock.insts.add(new Calc(currentBlock,"not", tmp, rs,null));
+                currentBlock.insts.add(new Calc(currentBlock,"xor", tmp, rs,new ConstInt(-1)));
                 break;
             case "!":
-                currentBlock.insts.add(new Calc(currentBlock,"seqz", tmp, rs,null));
+                currentBlock.insts.add(new Calc(currentBlock,"xor", tmp, rs,new ConstInt(1)));
                 break;
             default:
                 break;

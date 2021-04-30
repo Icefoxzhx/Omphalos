@@ -108,9 +108,9 @@ public class Inline {
                     Call ninst = new Call(nb, ((Call) inst).func, getReg(inst.reg));
                     ((Call) inst).params.forEach(x -> ninst.params.add(getOperand(x)));
                     nb.insts.add(ninst);
-                    if(!((Call) ninst).func.abs_name.startsWith("__Om_builtin_")){
-                        callerInst.get(((Call) ninst).func.func).add((Call) ninst);
-                        callerFunc.get(((Call) ninst).func.func).add(caller);
+                    if(!ninst.func.abs_name.startsWith("__Om_builtin_")){
+                        callerInst.get(ninst.func.func).add(ninst);
+                        callerFunc.get(ninst.func.func).add(caller);
                     }
                 } else if (inst instanceof J) {
                     nb.insts.add(new J(nb, getBlock(((J) inst).dest)));

@@ -52,9 +52,10 @@ public class SSAConstructor {
                     ((Phi) inst).blocks.remove(i);
                     ((Phi) inst).vals.remove(i);
                     --i;
+
                 }
             }
-            if(inst.reg!=null){
+            if(inst.reg!=null&&!inst.reg.name.equals("tmp.")){
                 currentFunc.vars.add(inst.reg);
                 inst.reg.assign.add(inst);
             }
@@ -155,6 +156,31 @@ public class SSAConstructor {
         domSon.get(b).forEach(y->RenameVar(x,y));
         while(x.rename_stack.peek()!=xx) x.rename_stack.pop();
     }
+
+    public void CheckPhi(){
+        currentFunc.blocks.forEach(block->{
+            LinkedHashMap<Register,Phi> Phis=new LinkedHashMap<>();
+            block.insts.forEach(inst->{
+                if(inst instanceof Phi) Phis.put(inst.reg,(Phi)inst);
+            });
+            block.insts.forEach(inst->{
+                if(inst instanceof Phi){
+                    for(int i=0;i<((Phi) inst).vals.size();++i){
+                        if(((Phi) inst).vals.get(i) instanceof Register && Phis.get(((Register) ((Phi) inst).vals.get(i)))!=null){
+                            Phi inst2=Phis.get(((Register) ((Phi) inst).vals.get(i)));
+                            for(int j=0;j<inst2.vals.size();++j){
+                                if(inst2.blocks.get(j)==((Phi) inst).blocks.get(i)){
+                                    ((Phi) inst).vals.set(i,inst2.vals.get(j));
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+
+    }
     public void run(){
         root.func.forEach(func->{
             currentFunc=func;
@@ -172,6 +198,7 @@ public class SSAConstructor {
                 }
                 RenameVar(v,currentFunc.beginBlock);
             });
+            CheckPhi();
         });
     }
 }
