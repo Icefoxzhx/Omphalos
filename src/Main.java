@@ -49,7 +49,7 @@ public class Main{
             new IRBuilder(IRRoot).visit(ASTRoot);
             new SSAConstructor(IRRoot).run();
             if(optimize) new Optimizer(IRRoot).run();
-            if(debug) new IRPrinter(IRRoot).run();
+            //if(debug) new IRPrinter(IRRoot).run();
             ASM.Root ASMRoot=new ASM.Root();
             new PhiEliminater(IRRoot).run();
             new ASMBuilder(IRRoot,ASMRoot).run();

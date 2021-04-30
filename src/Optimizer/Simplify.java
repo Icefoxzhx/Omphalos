@@ -102,8 +102,8 @@ public class Simplify {
         currentFunc.blocks=new ArrayList<>();
         dfsBlock(currentFunc.beginBlock);
         removeDeadBlock();
-        BlockMerge();
         removeDeadInst();
+        BlockMerge();
     }
     public void run(){
         root.func.forEach(this::doFunc);
