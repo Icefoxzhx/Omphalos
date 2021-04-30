@@ -23,14 +23,12 @@ public class SCCP {
 
     public void regUseCollect(){
         regUse=new LinkedHashMap<>();
-        currentFunc.blocks.forEach(block->block.insts.forEach(inst->{
-            inst.getUse().forEach(x->{
-                if(x instanceof Register){
-                    if(!regUse.containsKey(x)) regUse.put((Register) x,new ArrayList<>());
-                    regUse.get(x).add(inst);
-                }
-            });
-        }));
+        currentFunc.blocks.forEach(block->block.insts.forEach(inst-> inst.getUse().forEach(x->{
+            if(x instanceof Register){
+                if(!regUse.containsKey(x)) regUse.put((Register) x,new ArrayList<>());
+                regUse.get(x).add(inst);
+            }
+        })));
     }
     public void Replace(Register reg, Operand val){
         regUse.get(reg).forEach(inst -> inst.replaceUse(reg,val));
@@ -71,18 +69,76 @@ public class SCCP {
             Replace(inst.reg, new ConstInt(res));
             return true;
         }
-        if(inst.op.equals("eq") && inst.rs1==inst.rs2){
-            Replace(inst.reg, new ConstInt(1));
-            return true;
+        if(inst.rs1==inst.rs2){
+            if(inst.op.equals("eq")){
+                Replace(inst.reg, new ConstInt(1));
+                return true;
+            }
+            if(inst.op.equals("ne")){
+                Replace(inst.reg, new ConstInt(0));
+                return true;
+            }
         }
         return false;
     }
 
+    public boolean doConstStrCall(Call inst){
+        if(inst.params.size()<2 || !(inst.params.get(0) instanceof ConstStr) || !(inst.params.get(1) instanceof ConstStr) ) return false;
+        switch (inst.func.abs_name){
+            case "__Om_builtin_str_add":
+                String val=((ConstStr) inst.params.get(0)).val+((ConstStr) inst.params.get(1)).val;
+                if(!root.strings.containsKey(val)) root.strings.put(val,new ConstStr(".LS"+(root.strings.size()-1),val));
+                Replace(inst.reg,root.strings.get(val));
+                return true;
+            case "__Om_builtin_str_lt":
+                int res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)<0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            case "__Om_builtin_str_gt":
+                res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)>0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            case "__Om_builtin_str_le":
+                res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)<=0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            case "__Om_builtin_str_ge":
+                res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)>=0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            case "__Om_builtin_str_eq":
+                res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)==0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            case "__Om_builtin_str_ne":
+                res=((ConstStr) inst.params.get(0)).val.compareTo(((ConstStr) inst.params.get(1)).val)!=0?1:0;
+                Replace(inst.reg,new ConstInt(res));
+                return true;
+            default:
+                return false;
+        }
+    }
+    public boolean doPhi(Phi inst){
+        Operand t=inst.vals.get(0);
+        if(!(t instanceof ConstInt || t instanceof ConstStr)) return false;
+        for(int i=1;i<inst.vals.size();++i){
+            if(!t.equals(inst.vals.get(i))) return false;
+        }
+        Replace(inst.reg, t);
+        return true;
+    }
     public void doBlock(Block block){
         visited.add(block);
         for(int i=0;i<block.insts.size();++i){
             Inst inst=block.insts.get(i);
-            if(inst instanceof Calc){
+            if(inst instanceof Assign){
+                if(((Assign) inst).val instanceof ConstInt || ((Assign) inst).val instanceof ConstStr){
+                    Replace(inst.reg, ((Assign) inst).val);
+                    block.insts.remove(i);
+                    --i;
+                    flag=true;
+                }
+            }else if(inst instanceof Calc){
                 if(doCalc((Calc)inst)){
                     block.insts.remove(i);
                     --i;
@@ -98,6 +154,18 @@ public class SCCP {
                 if(((Branch)inst).val instanceof ConstInt){
                     block.removeTerminator();
                     block.addTerminator(new J(block,((ConstInt) ((Branch)inst).val).val==0?((Branch)inst).falseDest:((Branch)inst).trueDest));
+                    flag=true;
+                }
+            }else if(inst instanceof Call){
+                if(doConstStrCall((Call)inst)){
+                    block.insts.remove(i);
+                    --i;
+                    flag=true;
+                }
+            }else if(inst instanceof Phi){
+                if(doPhi((Phi)inst)){
+                    block.insts.remove(i);
+                    --i;
                     flag=true;
                 }
             }

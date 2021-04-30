@@ -4,6 +4,7 @@ import IR.operand.Operand;
 import IR.operand.Register;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Function {
     public String name;
@@ -14,6 +15,7 @@ public class Function {
     public ArrayList<Operand> params=new ArrayList<>();
     public Register raSaveReg;
     public ArrayList<Block> returnBlocks=new ArrayList<>();
+    public HashSet<Register> vars=new HashSet<>();
     public Function(String name){
         this.name=name;
     }

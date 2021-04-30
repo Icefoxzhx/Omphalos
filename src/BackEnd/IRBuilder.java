@@ -7,7 +7,9 @@ import IR.operand.*;
 import Util.symbol.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 public class IRBuilder implements ASTVisitor {
     public Type currentReturnType;
@@ -102,6 +104,8 @@ public class IRBuilder implements ASTVisitor {
 
     public void checkBranch(ExprNode it){
         if(it.trueBlock==null) return;
+        if(it.trueBlock.branchPhi!=null) it.trueBlock.branchPhi.add(currentBlock,new ConstInt(1));
+        if(it.falseBlock.branchPhi!=null) it.falseBlock.branchPhi.add(currentBlock,new ConstInt(0));
         if(it.operand instanceof ConstInt){
             currentBlock.addTerminator(new J(currentBlock,((ConstInt) it.operand).val==0?it.falseBlock:it.trueBlock));
         }
@@ -161,7 +165,7 @@ public class IRBuilder implements ASTVisitor {
         }
         currentFunc.StackSpace=Integer.max(0,it.paramList.size()+(it.func.inClass?1:0)-8)*4;
         currentBlock=currentFunc.beginBlock=new Block(loopDepth,currentFunc.name+"."+currentFunc.blocks.size());
-        currentFunc.blocks.add(currentBlock);
+        
         root.func.add(currentFunc);
 
         it.paramList.forEach(x->{
@@ -189,16 +193,16 @@ public class IRBuilder implements ASTVisitor {
             currentFunc.endBlock=currentBlock=new Block(loopDepth,"Returnof" + currentFunc.name);
             if(!it.func.returnType.isVoid()){
                 Register tmp=new Register("tmp");
-                currentFunc.returnBlocks.forEach(b-> {
-                    if(((Return)b.insts.get(b.insts.size()-1)).val!=null) b.insts.add(b.insts.size()-1,new Assign(b,tmp,((Return)b.insts.get(b.insts.size()-1)).val));
-                });
+                Phi phi=new Phi(currentBlock,tmp);
+                currentFunc.returnBlocks.forEach(b->phi.add(b,((Return)b.getTerminator()).val));
+                currentBlock.insts.add(phi);
                 currentBlock.addTerminator(new Return(currentBlock,tmp));
             }else currentBlock.addTerminator(new Return(currentBlock,null));
             currentFunc.returnBlocks.forEach(block->{
                 block.removeTerminator();
                 block.addTerminator(new J(block,currentBlock));
             });
-            currentFunc.blocks.add(currentBlock);
+            
         }else currentFunc.endBlock=currentBlock;
     }
 
@@ -239,25 +243,25 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.addTerminator(new J(currentBlock,loopcond));
 
             currentBlock=loopcond;
-            currentFunc.blocks.add(currentBlock);
+            
             it.cond.trueBlock=loopbody;
             it.cond.falseBlock=loopend;
             it.cond.accept(this);
         }else currentBlock.addTerminator(new J(currentBlock,loopbody));
         currentBlock=loopbody;
-        currentFunc.blocks.add(currentBlock);
+        
         it.body.accept(this);
         if(it.incr!=null){
             currentBlock.addTerminator(new J(currentBlock,loopincr));
 
             currentBlock=loopincr;
-            currentFunc.blocks.add(currentBlock);
+            
             it.incr.accept(this);
         }
         currentBlock.addTerminator(new J(currentBlock,it.cond==null?loopbody:loopcond));
 
         currentBlock=loopend;
-        currentFunc.blocks.add(currentBlock);
+        
 
         currentloopend=_loopend;
         currentloopcond=_loopcond;
@@ -275,19 +279,19 @@ public class IRBuilder implements ASTVisitor {
 
         it.cond.accept(this);
         currentBlock=iftrue;
-        currentFunc.blocks.add(currentBlock);
+        
         it.trueStmt.accept(this);
         if(it.falseStmt!=null){
             currentBlock.addTerminator(new J(currentBlock,ifend));
 
             currentBlock=iffalse;
-            currentFunc.blocks.add(currentBlock);
+            
             it.falseStmt.accept(this);
         }
         currentBlock.addTerminator(new J(currentBlock,ifend));
 
         currentBlock=ifend;
-        currentFunc.blocks.add(currentBlock);
+        
     }
 
     @Override
@@ -318,20 +322,20 @@ public class IRBuilder implements ASTVisitor {
         currentBlock.addTerminator(new J(currentBlock,loopcond));
 
         currentBlock=loopcond;
-        currentFunc.blocks.add(currentBlock);
+        
 
         it.cond.trueBlock=loopbody;
         it.cond.falseBlock=loopend;
         it.cond.accept(this);
 
         currentBlock=loopbody;
-        currentFunc.blocks.add(currentBlock);
+        
 
         it.body.accept(this);
         currentBlock.addTerminator(new J(currentBlock,loopcond));
 
         currentBlock=loopend;
-        currentFunc.blocks.add(currentBlock);
+        
 
         currentloopend=_loopend;
         currentloopcond=_loopcond;
@@ -360,11 +364,11 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.addTerminator(new J(currentBlock,_loopcond));
 
             currentBlock=_loopcond;
-            currentFunc.blocks.add(currentBlock);
+            
             currentBlock.addTerminator(new Branch(currentBlock,iter,_loopbody,_loopend));
 
             currentBlock=_loopbody;
-            currentFunc.blocks.add(currentBlock);
+            
             Register res=new Register("tmp");
             currentBlock.insts.add(new Calc(currentBlock,"sll", res, iter, new ConstInt(2)));
             currentBlock.insts.add(new Calc(currentBlock,"add", res, nowreg, res));
@@ -375,7 +379,7 @@ public class IRBuilder implements ASTVisitor {
             currentBlock.addTerminator(new J(currentBlock,_loopcond));
 
             currentBlock=_loopend;
-            currentFunc.blocks.add(currentBlock);
+            
             --loopDepth;
         }
         return nowreg;
@@ -416,8 +420,10 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(StrConstExpr it) {
-        root.strings.add(it.val);
-        it.operand = new ConstStr(".LS"+String.valueOf(root.strings.size()-1),it.val);
+        if(!root.strings.containsKey(it.val)){
+            root.strings.put(it.val,new ConstStr(".LS"+ (root.strings.size() - 1),it.val));
+        }
+        it.operand = root.strings.get(it.val);
     }
 
     @Override
@@ -447,39 +453,25 @@ public class IRBuilder implements ASTVisitor {
                     it.expr2.falseBlock=it.falseBlock;
                     it.expr1.accept(this);
                     currentBlock=newBlock;
-                    currentFunc.blocks.add(currentBlock);
+                    
                     it.expr2.accept(this);
                 }else{
-                    Block setfalse = new Block(loopDepth,"setfalse"+Label), settrue = new Block(loopDepth,"settrue"+Label), end = new Block(loopDepth,"setend"+Label), settmp = new Block(loopDepth, "settmp"+Label);
+                    Block end = new Block(loopDepth,"setend"+Label), settmp = new Block(loopDepth, "settmp"+Label);
                     //short-circuit
+                    Phi phi=new Phi(end,tmp);
+                    end.branchPhi=phi;
                     it.expr1.trueBlock=settmp;
-                    it.expr1.falseBlock=setfalse;
+                    it.expr1.falseBlock=end;
                     it.expr1.accept(this);
 
                     currentBlock=settmp;
-                    currentFunc.blocks.add(currentBlock);
-                    it.expr2.trueBlock=settrue;
-                    it.expr2.falseBlock=setfalse;
                     it.expr2.accept(this);
-
-                    currentBlock=settrue;
-                    currentFunc.blocks.add(currentBlock);
-                    currentBlock.insts.add(new Assign(currentBlock,tmp, new ConstInt(1)));
-                    currentBlock.addTerminator(new J(currentBlock,end));
-
-                    currentBlock=setfalse;
-                    currentFunc.blocks.add(currentBlock);
-                    currentBlock.insts.add(new Assign(currentBlock,tmp, new ConstInt(0)));
+                    phi.add(currentBlock,it.expr2.operand);
                     currentBlock.addTerminator(new J(currentBlock,end));
 
                     currentBlock=end;
-                    currentFunc.blocks.add(currentBlock);
-
-                    if(it.expr1.operand instanceof ConstInt && it.expr2.operand instanceof ConstInt){
-                        it.operand=new ConstInt(((ConstInt) it.expr2.operand).val&((ConstInt) it.expr2.operand).val);
-                    }
+                    currentBlock.insts.add(phi);
                 }
-
                 return;
             case "||":
                 ++Label;
@@ -491,40 +483,23 @@ public class IRBuilder implements ASTVisitor {
                     it.expr2.falseBlock=it.falseBlock;
                     it.expr1.accept(this);
                     currentBlock=newBlock;
-                    currentFunc.blocks.add(currentBlock);
                     it.expr2.accept(this);
                 }else{
-                    Block settrue = new Block(loopDepth,"settrue"+Label),
-                    setfalse = new Block(loopDepth,"setfalse"+Label),
-                    settmp = new Block(loopDepth,"settmp"+Label),
-                    end = new Block(loopDepth,"setend"+Label);
+                    Block end = new Block(loopDepth,"setend"+Label), settmp = new Block(loopDepth, "settmp"+Label);
                     //short-circuit
-                    it.expr1.trueBlock=settrue;
+                    Phi phi=new Phi(end,tmp);
+                    end.branchPhi=phi;
+                    it.expr1.trueBlock=end;
                     it.expr1.falseBlock=settmp;
                     it.expr1.accept(this);
 
                     currentBlock=settmp;
-                    currentFunc.blocks.add(currentBlock);
-                    it.expr2.trueBlock=settrue;
-                    it.expr2.falseBlock=setfalse;
                     it.expr2.accept(this);
-
-                    currentBlock=setfalse;
-                    currentFunc.blocks.add(currentBlock);
-                    currentBlock.insts.add(new Assign(currentBlock,tmp,new ConstInt(0)));
-                    currentBlock.addTerminator(new J(currentBlock,end));
-
-                    currentBlock=settrue;
-                    currentFunc.blocks.add(currentBlock);
-                    currentBlock.insts.add(new Assign(currentBlock,tmp, new ConstInt(1)));
+                    phi.add(currentBlock,it.expr2.operand);
                     currentBlock.addTerminator(new J(currentBlock,end));
 
                     currentBlock=end;
-                    currentFunc.blocks.add(currentBlock);
-
-                    if(it.expr1.operand instanceof ConstInt && it.expr2.operand instanceof ConstInt){
-                        it.operand=new ConstInt(((ConstInt) it.expr2.operand).val | ((ConstInt) it.expr2.operand).val);
-                    }
+                    currentBlock.insts.add(phi);
                 }
                 return;
         }

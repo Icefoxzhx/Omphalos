@@ -1,6 +1,7 @@
 package ASM;
 
 import ASM.operand.PReg;
+import IR.operand.ConstStr;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.LinkedHashSet;
 
 public class Root {
     public ArrayList<Function> func=new ArrayList<>();
-    public ArrayList<String> strings=new ArrayList<>();
+    public LinkedHashMap<String, ConstStr> strings=new LinkedHashMap<>();
     public ArrayList<String> globals=new ArrayList<>();
     public LinkedHashMap<Integer,PReg> PRegMap=new LinkedHashMap<>();
     public String []regname=new String[]{"zero", "ra", "sp", "gp", "tp", "t0", "t1", "t2", "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"};

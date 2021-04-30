@@ -306,7 +306,7 @@ public class ASMBuilder {
     }
     public void run(){
         ASMRoot.globals = IRRoot.globals;
-        ASMRoot.strings = IRRoot.strings;;
+        ASMRoot.strings = IRRoot.strings;
         IRRoot.func.forEach(this::doFunc);
     }
 }

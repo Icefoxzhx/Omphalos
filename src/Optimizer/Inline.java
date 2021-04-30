@@ -82,7 +82,7 @@ public class Inline {
     public void inline(Call call,Function caller,String prefix){
         Function callee=call.func.func;
         int totalInstNum=callee.blocks.stream().mapToInt(b->b.insts.size()).sum();
-        if(callee.blocks.size()>50 || totalInstNum>500) return;
+        if(callee.blocks.size()>30 || totalInstNum>300) return;
         inlineBlock=new LinkedHashMap<>();
         inlineReg=new LinkedHashMap<>();
         callee.blocks.forEach(b->{
@@ -121,6 +121,13 @@ public class Inline {
                 } else if (inst instanceof Return) {
                     nb.insts.add(new Return(nb, getOperand(((Return) inst).val)));
                     endBlock = nb;
+                }else if (inst instanceof Phi){
+                    Phi ninst=new Phi(nb,getReg(inst.reg));
+                    ninst.domPhi=((Phi) inst).domPhi;
+                    for(int i=0;i<((Phi) inst).blocks.size();++i){
+                        ninst.add(getBlock(((Phi) inst).blocks.get(i)),getOperand(((Phi) inst).vals.get(i)));
+                    }
+                    nb.insts.add(ninst);
                 }
             }
         }
@@ -144,10 +151,12 @@ public class Inline {
             }
             x.succ.remove(callerBlock);
             x.succ.add(b1);
+            x.UpdateBranch(callerBlock,b1);
         });
         b1.succ.forEach(x->{
             x.pred.remove(beginBlock);
             x.pred.add(b1);
+            x.UpdatePhi(beginBlock,b1);
         });
         if(caller.beginBlock==callerBlock) caller.beginBlock=b1;
         if(endBlock==beginBlock) endBlock=b1;
@@ -175,10 +184,13 @@ public class Inline {
             }
             x.succ.remove(finalEndBlock);
             x.succ.add(b2);
+            x.UpdateBranch(finalEndBlock,b2);
+
         });
         b2.succ.forEach(x->{
             x.pred.remove(callerBlock);
             x.pred.add(b2);
+            x.UpdatePhi(callerBlock,b2);
         });
         if(caller.beginBlock==endBlock) caller.beginBlock=b2;
 
@@ -188,7 +200,7 @@ public class Inline {
 
     public void doInline(Function x){
         int totalInstNum=x.blocks.stream().mapToInt(b->b.insts.size()).sum();
-        if(x.blocks.size()>50 || totalInstNum>500) return;
+        if(x.blocks.size()>30 || totalInstNum>300) return;
         for(int i=0;i<callerInst.get(x).size();++i){
             inline(callerInst.get(x).get(i),callerFunc.get(x).get(i),"I."+x.name+"."+i+".");
         }
@@ -196,9 +208,9 @@ public class Inline {
     }
 
     public void ForceInline(Function func){
-        for(int ii=0;ii<5;++ii){
+        for(int ii=0;ii<4;++ii){
             int totalInstNum=func.blocks.stream().mapToInt(b->b.insts.size()).sum();
-            if(func.blocks.size()>50 || totalInstNum>500) break;
+            if(func.blocks.size()>30 || totalInstNum>300) break;
             newcallerInst.clear();
             newcallerInst.addAll(callerInst.get(func));
             newcallerFunc.clear();

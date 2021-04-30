@@ -26,11 +26,11 @@ public class ASMPrinter {
     }
     public void run(){
         System.out.println("\t.section\t.rodata");
-        for(int i=0;i<root.strings.size();++i){
-            System.out.println(".LS"+ i + ":");
-            System.out.println("\t.string\t" + root.strings.get(i));
+        root.strings.forEach((key,val)->{
+            System.out.println(val.name+":");
+            System.out.println("\t.string\t" + val.val);
             System.out.println();
-        }
+        });
         System.out.println("\t.section\t.bss");
         for(String name : root.globals){
             System.out.println("\t.globl\t"+name);

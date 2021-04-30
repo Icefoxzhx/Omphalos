@@ -1,11 +1,10 @@
 package Optimizer;
 
-import IR.inst.Call;
-import IR.inst.Inst;
+import IR.inst.*;
 import IR.Block;
 import IR.Function;
 import IR.Root;
-import IR.inst.J;
+import IR.operand.ConstStr;
 import IR.operand.Register;
 
 import java.util.ArrayList;
@@ -60,6 +59,22 @@ public class Simplify {
                 }
             }
         }
+        for(Block block:currentFunc.blocks){
+            for(int i=0;i<block.insts.size();++i){
+                Inst inst=block.insts.get(i);
+                if(inst instanceof Phi){
+                    for(int ii=0;ii<((Phi) inst).blocks.size();++ii){
+                        if(block.pred.contains(((Phi) inst).blocks.get(ii))&&((Phi) inst).vals.get(ii)!=null) continue;
+                        ((Phi) inst).blocks.remove(ii);
+                        ((Phi) inst).vals.remove(ii);
+                        --ii;
+                    }
+                    if(((Phi) inst).blocks.size()==1){
+                        block.insts.set(i,new Assign(block, inst.reg, ((Phi) inst).vals.get(0)));
+                    }
+                }
+            }
+        }
     }
 
     public void BlockMerge(){
@@ -73,8 +88,10 @@ public class Simplify {
                     inst.block=b;
                     b.insts.add(inst);
                 }
+                block.succ.forEach(x->x.UpdatePhi(block,b));
                 b.addTerminator(block.getTerminator());
                 b.getTerminator().block=b;
+                block.removeTerminator();
                 currentFunc.blocks.remove(i);
                 --i;
             }
@@ -85,8 +102,8 @@ public class Simplify {
         currentFunc.blocks=new ArrayList<>();
         dfsBlock(currentFunc.beginBlock);
         removeDeadBlock();
-        removeDeadInst();
         BlockMerge();
+        removeDeadInst();
     }
     public void run(){
         root.func.forEach(this::doFunc);

@@ -11,7 +11,7 @@ import java.util.*;
 public class ADCE {
     public Root root;
 
-    public LinkedHashMap<Register, ArrayList<Inst> > regDef;
+    public LinkedHashMap<Register, Inst > regDef;
     public LinkedHashSet<Inst> liveInst;
     public Queue<Inst>q;
 
@@ -23,8 +23,7 @@ public class ADCE {
         regDef=new LinkedHashMap<>();
         func.blocks.forEach(block->block.insts.forEach(inst->{
             if(inst.reg!=null){
-                if(!regDef.containsKey(inst.reg)) regDef.put(inst.reg, new ArrayList<>());
-                regDef.get(inst.reg).add(inst);
+                regDef.put(inst.reg,inst) ;
             }
         }));
     }
@@ -43,12 +42,11 @@ public class ADCE {
             Inst inst=q.poll();
             inst.getUse().forEach(x->{
                 if(x instanceof Register && regDef.containsKey(x)){
-                    regDef.get(x).forEach(defInst->{
-                        if(!liveInst.contains(defInst)){
-                            liveInst.add(defInst);
-                            q.add(defInst);
-                        }
-                    });
+                    Inst defInst=regDef.get(x);
+                    if(!liveInst.contains(defInst)){
+                        liveInst.add(defInst);
+                        q.add(defInst);
+                    }
                 }
             });
         }
