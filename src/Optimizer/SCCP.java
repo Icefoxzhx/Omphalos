@@ -30,9 +30,11 @@ public class SCCP {
             }
         })));
     }
+
     public void Replace(Register reg, Operand val){
         regUse.get(reg).forEach(inst -> inst.replaceUse(reg,val));
     }
+
     public boolean doCalc(Calc inst) {
         if (inst.rs1 instanceof ConstInt && inst.rs2 instanceof ConstInt) {
             if (((inst.op.equals("div") || inst.op.equals("rem")) && ((ConstInt) inst.rs2).val == 0)) return false;
@@ -87,7 +89,7 @@ public class SCCP {
         switch (inst.func.abs_name){
             case "__Om_builtin_str_add":
                 String val=((ConstStr) inst.params.get(0)).val+((ConstStr) inst.params.get(1)).val;
-                if(!root.strings.containsKey(val)) root.strings.put(val,new ConstStr(".LS"+(root.strings.size()-1),val));
+                if(!root.strings.containsKey(val)) root.strings.put(val,new ConstStr(".LS"+root.strings.size(),val));
                 Replace(inst.reg,root.strings.get(val));
                 return true;
             case "__Om_builtin_str_lt":

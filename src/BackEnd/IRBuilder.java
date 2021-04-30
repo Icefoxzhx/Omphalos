@@ -421,7 +421,7 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(StrConstExpr it) {
         if(!root.strings.containsKey(it.val)){
-            root.strings.put(it.val,new ConstStr(".LS"+ (root.strings.size() - 1),it.val));
+            root.strings.put(it.val,new ConstStr(".LS"+ root.strings.size(),it.val));
         }
         it.operand = root.strings.get(it.val);
     }
