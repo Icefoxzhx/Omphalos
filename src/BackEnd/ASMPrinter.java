@@ -28,7 +28,7 @@ public class ASMPrinter {
         System.out.println("\t.section\t.rodata");
         root.strings.forEach((key,val)->{
             System.out.println(val.name+":");
-            System.out.println("\t.string\t" + val.val);
+            System.out.println("\t.string\t\"" + val.val+"\"");
             System.out.println();
         });
         System.out.println("\t.section\t.bss");

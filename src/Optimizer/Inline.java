@@ -12,6 +12,7 @@ import java.util.LinkedHashSet;
 
 public class Inline {
     public Root root;
+    public int tot;
     public LinkedHashMap<Function, ArrayList<Function>> calleeFunc = new LinkedHashMap<>();
     public LinkedHashMap<Function, ArrayList<Call>> callerInst = new LinkedHashMap<>();
     public LinkedHashMap<Function, ArrayList<Function>> callerFunc = new LinkedHashMap<>();
@@ -24,8 +25,9 @@ public class Inline {
     public LinkedHashMap<Block,Block> inlineBlock;
     public LinkedHashMap<Register,Register> inlineReg;
 
-    public Inline(Root root){
+    public Inline(Root root,int tot){
         this.root=root;
+        this.tot=tot;
     }
 
     public void dfsBlock(Function func,Block x){
@@ -208,7 +210,7 @@ public class Inline {
     }
 
     public void ForceInline(Function func){
-        for(int ii=0;ii<4;++ii){
+        for(int ii=0;ii<10;++ii){
             int totalInstNum=func.blocks.stream().mapToInt(b->b.insts.size()).sum();
             if(func.blocks.size()>30 || totalInstNum>300) break;
             newcallerInst.clear();
@@ -218,7 +220,7 @@ public class Inline {
             callerInst.get(func).clear();
             callerFunc.get(func).clear();
             for(int i=0;i<newcallerInst.size();++i){
-                inline(newcallerInst.get(i),newcallerFunc.get(i),"FI."+ii+"."+func.name+"."+i+".");
+                inline(newcallerInst.get(i),newcallerFunc.get(i),"FI."+tot*10+ii+"."+func.name+"."+i+".");
             }
         }
     }

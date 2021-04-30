@@ -34,7 +34,7 @@ public class PhiEliminater {
             for(int i=0;i<b.pred.size();++i){
                 Block x=b.pred.get(i);
                 if(x.succ.size()>1){
-                    Block tmp=new Block(0,"block.phi."+(block_id++));
+                    Block tmp=new Block(0,func.name+".block.phi."+(block_id++));
                     func.blocks.add(tmp);
                     tmp.insts.add(new J(tmp,b));
                     tmp.terminated=true;
