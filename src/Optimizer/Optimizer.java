@@ -20,6 +20,8 @@ public class Optimizer {
             new Simplify(root).run();
             new Inline(root,i).run();
             new Simplify(root).run();
+            new LICM(root).run();
+            new Simplify(root).run();
         }
     }
 }

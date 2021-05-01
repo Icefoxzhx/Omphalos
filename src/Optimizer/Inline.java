@@ -228,10 +228,12 @@ public class Inline {
         }
     }
     public void run(){
+        int totalInstNum=root.func.stream().mapToInt(func->func.blocks.stream().mapToInt(b->b.insts.size()).sum()).sum();
         edgeCollect();
         canNotInline.add(root.mainFunc);
         dfs(root.mainFunc);
         canInline.forEach(this::doInline);
+
         root.func.forEach(func->{
             if(callerFunc.get(func).contains(func)) ForceInline(func);
         });
