@@ -57,7 +57,7 @@ public class SSAConstructor {
 
                 }
             }
-            if(inst.reg!=null&&!inst.reg.name.equals("tmp.")){
+            if(inst.reg!=null){
                 currentFunc.vars.add(inst.reg);
                 inst.reg.assign.add(inst);
             }
