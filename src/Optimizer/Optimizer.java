@@ -14,6 +14,8 @@ public class Optimizer {
         for(int i=0;i<10;++i){
             new SCCP(root).run();
             new Simplify(root).run();
+            new CSE(root).run();
+            new Simplify(root).run();
             new ADCE(root).run();
             new Simplify(root).run();
             new Inline(root,i).run();

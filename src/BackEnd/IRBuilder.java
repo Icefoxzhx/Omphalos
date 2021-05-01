@@ -92,7 +92,7 @@ public class IRBuilder implements ASTVisitor {
 
     public Operand resolvePtr(Operand x){
         if(!x.isptr) return x;
-        Register tmp=new Register("tmp");
+        Register tmp=new Register("tmp.");
         currentBlock.insts.add(new Load(currentBlock,tmp,x));
         return tmp;
     }
@@ -343,10 +343,10 @@ public class IRBuilder implements ASTVisitor {
     }
 
     public Register newArray(int i,NewExpr it){
-        Register nowreg=new Register("tmp");
+        Register nowreg=new Register("tmp.");
         Operand sz=resolvePtr(it.exprList.get(i).operand);
         Call xx=new Call(currentBlock,funcMap.get("__Om_builtin_malloc"),nowreg);
-        Register tmp=new Register("tmp");
+        Register tmp=new Register("tmp.");
         currentBlock.insts.add(new Calc(currentBlock,"add", tmp, sz, new ConstInt(1)));
         currentBlock.insts.add(new Calc(currentBlock,"sll", tmp, tmp, new ConstInt(2)));
         xx.params.add(tmp);
@@ -355,7 +355,7 @@ public class IRBuilder implements ASTVisitor {
         currentBlock.insts.add(new Store(currentBlock,sz,nowreg));
         if(i<it.exprList.size()-1){
 
-            Register iter=new Register("tmp");
+            Register iter=new Register("tmp.");
             currentBlock.insts.add(new Assign(currentBlock,iter,sz));
 
             ++Label;
@@ -369,7 +369,7 @@ public class IRBuilder implements ASTVisitor {
 
             currentBlock=_loopbody;
             
-            Register res=new Register("tmp");
+            Register res=new Register("tmp.");
             currentBlock.insts.add(new Calc(currentBlock,"sll", res, iter, new ConstInt(2)));
             currentBlock.insts.add(new Calc(currentBlock,"add", res, nowreg, res));
 
@@ -441,7 +441,7 @@ public class IRBuilder implements ASTVisitor {
             it.operand = it.expr1.operand;
             return;
         }
-        Register tmp =new Register("tmp");
+        Register tmp =new Register("tmp.");
         it.operand=tmp;
         switch (it.op) {
             case "&&":
@@ -648,7 +648,7 @@ public class IRBuilder implements ASTVisitor {
         if(it.isFunc){
             it.operand = it.base.operand;
         }else{
-            Register tmp=new Register("tmp");
+            Register tmp=new Register("tmp.");
             if(((ConstInt)it.var.operand).val*4>2047){
                 //todo:
             }
@@ -663,7 +663,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(SubscriptExpr it) {
         it.base.accept(this);
         it.offset.accept(this);
-        Register tmp=new Register("tmp");
+        Register tmp=new Register("tmp.");
         currentBlock.insts.add(new Calc(currentBlock,"add", tmp, resolvePtr(it.offset.operand), new ConstInt(1)));
         currentBlock.insts.add(new Calc(currentBlock,"sll", tmp, tmp, new ConstInt(2)));
         currentBlock.insts.add(new Calc(currentBlock,"add", tmp , resolvePtr(it.base.operand), tmp));
@@ -675,8 +675,8 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(SuffixExpr it) {
         it.expr.accept(this);
-        Register tmp = new Register("tmp");
-        it.operand = new Register("tmp");
+        Register tmp = new Register("tmp.");
+        it.operand = new Register("tmp.");
         Operand rs = resolvePtr(it.expr.operand);
         currentBlock.insts.add(new Assign(currentBlock,(Register) it.operand,rs));
         switch (it.op) {
@@ -700,7 +700,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(UnaryExpr it) {
         it.expr.accept(this);
         Operand rs = resolvePtr(it.expr.operand);
-        Register tmp = new Register("tmp");
+        Register tmp = new Register("tmp.");
         it.operand=tmp;
         switch (it.op) {
             case "++":
@@ -732,7 +732,7 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(VarExpr it) {
         if(it.var.isClassMember){
-            Register tmp=new Register("tmp");
+            Register tmp=new Register("tmp.");
             currentBlock.insts.add(new Calc(currentBlock,"add",tmp, thisptr,new ConstInt(((ConstInt)it.var.operand).val*4)));
             tmp.isptr = true;
             it.operand = tmp;

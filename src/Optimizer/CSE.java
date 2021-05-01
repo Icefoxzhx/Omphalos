@@ -12,13 +12,11 @@ public class CSE {
     }
 
     public boolean same(Cmp a, Cmp b){
-
-        return false;
+        return a.op.equals(b.op)&&a.rs1.equals(b.rs1)&&a.rs2.equals(b.rs2);
     }
 
     public boolean same(Calc a, Calc b){
-
-        return false;
+        return a.op.equals(b.op)&&a.rs1.equals(b.rs1)&&a.rs2.equals(b.rs2);
     }
 
     public void doBlock(Block block){

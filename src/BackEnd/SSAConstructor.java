@@ -3,8 +3,10 @@ package BackEnd;
 import IR.Block;
 import IR.Function;
 import IR.Root;
+import IR.inst.Assign;
 import IR.inst.Inst;
 import IR.inst.Phi;
+import IR.operand.Operand;
 import IR.operand.Register;
 
 import java.util.ArrayList;
@@ -159,6 +161,15 @@ public class SSAConstructor {
 
     public void CheckPhi(){
         currentFunc.blocks.forEach(block->{
+            for(int i=0;i<block.insts.size();++i){
+                Inst inst=block.insts.get(i);
+                if(inst instanceof Phi && ((Phi) inst).vals.size()==1){
+                    block.insts.set(i, new Assign(block, inst.reg, ((Phi) inst).vals.get(0)));
+                }
+            }
+        });
+
+            currentFunc.blocks.forEach(block->{
             LinkedHashMap<Register,Phi> Phis=new LinkedHashMap<>();
             block.insts.forEach(inst->{
                 if(inst instanceof Phi) Phis.put(inst.reg,(Phi)inst);
@@ -178,7 +189,29 @@ public class SSAConstructor {
                 }
             });
         });
-
+        boolean flag=true;
+        while(flag){
+            flag=false;
+            for(Block block : currentFunc.blocks){
+                for(Inst inst : block.insts){
+                    inst.getUse().forEach(x->{
+                        if(x instanceof Register) ((Register) x).isUsed=true;
+                    });
+                }
+            }
+            for(Block block : currentFunc.blocks){
+                for(int i=0;i<block.insts.size();++i){
+                    Inst inst=block.insts.get(i);
+                    if(inst instanceof Phi){
+                        if(!inst.reg.isUsed){
+                            block.insts.remove(i);
+                            --i;
+                            flag=true;
+                        }else inst.reg.isUsed=false;
+                    }
+                }
+            }
+        }
 
     }
     public void run(){

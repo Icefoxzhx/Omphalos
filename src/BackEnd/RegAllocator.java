@@ -114,7 +114,7 @@ public class RegAllocator{
         spilledNodes=new LinkedHashSet<>();
         coalescedNodes =new LinkedHashSet<>();
         coloredNodes=new LinkedHashSet<>();
-        canNotSpillNodes=new LinkedHashSet<>();
+
         moveList=new LinkedHashMap<>();
         adjList=new LinkedHashMap<>();
         weight=new LinkedHashMap<>();
@@ -381,7 +381,6 @@ public class RegAllocator{
             spOffset += 4;
         }
         for(Block block : currentFunction.blocks){
-            //System.err.println(block);
             for(int i=0;i<block.insts.size();++i){
                 Inst inst=block.insts.get(i);
                 if(inst instanceof Mv && spilledNodes.contains(((Mv) inst).rd) && spilledNodes.contains(((Mv) inst).rs)){
@@ -542,6 +541,7 @@ public class RegAllocator{
         for (Function func : root.func) {
             spOffset = 0;
             currentFunction = func;
+            canNotSpillNodes=new LinkedHashSet<>();
             RunFunc();
         }
     }

@@ -11,6 +11,7 @@ public class Register extends Operand{
     public ArrayList<Inst> assign=new ArrayList<>();
     public Stack<Register> rename_stack=new Stack<>();
     public int rename_id=0;
+    public boolean isUsed=false;
     public Register(String name){
         this.name=name;
     }

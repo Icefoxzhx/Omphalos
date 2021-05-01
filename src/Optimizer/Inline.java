@@ -36,6 +36,7 @@ public class Inline {
             if(!func.blocks.contains(y)) dfsBlock(func,y);
         });
     }
+
     public void edgeCollect(){
         calleeFunc =new LinkedHashMap<>();
         root.func.forEach(x->{
@@ -73,10 +74,12 @@ public class Inline {
         if(!inlineReg.containsKey(x)) inlineReg.put(x,new Register(x.name));
         return inlineReg.get(x);
     }
+
     public Operand getOperand(Operand x){
         if(x instanceof Register) return getReg((Register) x);
         return x;
     }
+
     public Block getBlock(Block block){
         return inlineBlock.get(block);
     }
